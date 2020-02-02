@@ -16,6 +16,11 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
             .authorizeRequests()
                 // ルート直下のアクセスは許可する
                 .mvcMatchers("/*").permitAll()
+                // リソースへのアクセスは許可する
+                .mvcMatchers("/users/**").permitAll()
+                // 静的リソースへのアクセスは許可する
+                .mvcMatchers("/webjars/**").permitAll()
+
                 // 上記以外は拒否
                 .anyRequest().denyAll()
     }
