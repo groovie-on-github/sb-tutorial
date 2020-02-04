@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+
+    <title th:text="${title}">Title</title>
+</head>
+<body class="mt-5">
+<div class="container">
+<ul class="text-success" th:unless="${#lists.isEmpty(messages)}">
+    <li th:each="msg : ${messages}" th:text="${msg}"></li>
+</ul>
+<h1>Edit micropost</h1>
+<form action="/microposts/{id}" th:action="@{/microposts/{id}(id=*{id})}"
+      method="post" th:method="post" th:object="${micropost}">
+    <div class="form-group row">
+        <label for="content" class="col-sm-1 col-form-label"><strong>Content</strong></label>
+        <div class="col-sm-4">
+            <input id="content" class="form-control" type="text" name="content" th:value="*{content}"
+                   th:field="*{content}" th:errorclass="is-invalid" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content error</div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="userId" class="col-sm-1 col-form-label"><strong>UserID</strong></label>
+        <div class="col-sm-4">
+            <input id="userId" class="form-control" type="text" name="userId" th:value="*{userId}"
+                   th:field="*{userId}" th:errorclass="is-invalid" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">UserID error</div>
+        </div>
+    </div>
+    <input class="btn btn-outline-secondary" type="submit" value="Update" th:value="|Update micropost|">
+</form>
+
+<br>
+<a href="/microposts" th:href="@{/microposts}">Back to List</a>
+
+<script th:src="@{/webjars/jquery/jquery.slim.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</div>
+</body>
+</html>
