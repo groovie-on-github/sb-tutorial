@@ -1,6 +1,7 @@
 package com.example.sbtutorial.domain.user
 
 import com.example.sbtutorial.domain.base.BaseEntity
+import com.example.sbtutorial.domain.micropost.Micropost
 import java.util.UUID
 import javax.persistence.*
 import javax.validation.constraints.Email
@@ -23,16 +24,14 @@ class User(name: String = "", email: String = ""): BaseEntity() {
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val microposts: MutableList<Micropost> = mutableListOf()
 
-    override fun toString(): String {
-        return "User(name='$name', email='$email', id=$id)"
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as User
+        if (other !is User) return false
+        if (!super.equals(other)) return false
 
         if (name != other.name) return false
         if (email != other.email) return false
@@ -42,9 +41,14 @@ class User(name: String = "", email: String = ""): BaseEntity() {
     }
 
     override fun hashCode(): Int {
-        var result = name.hashCode()
+        var result = super.hashCode()
+        result = 31 * result + name.hashCode()
         result = 31 * result + email.hashCode()
-        result = 31 * result + id.hashCode()
+        result = 31 * result + (id?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "User(id=$id, name='$name', email='$email', ${super.toString()})"
     }
 }

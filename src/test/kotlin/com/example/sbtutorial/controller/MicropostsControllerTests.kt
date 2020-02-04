@@ -2,6 +2,8 @@ package com.example.sbtutorial.controller
 
 import com.example.sbtutorial.domain.micropost.Micropost
 import com.example.sbtutorial.domain.micropost.MicropostsService
+import com.example.sbtutorial.domain.user.User
+import com.example.sbtutorial.domain.user.UsersService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.*
 import org.assertj.core.api.Assertions.*
@@ -23,22 +25,28 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
     @MockkBean
     private lateinit var ms: MicropostsService
 
-    private val id1 = UUID.randomUUID()
-    private val userId1 = UUID.randomUUID()
+    @MockkBean
+    private lateinit var us: UsersService
 
+    private val id1 = UUID.randomUUID()
+    private val user1 = User("test user1", "user1@example.com").apply { id = UUID.randomUUID() }
+    private val microposts = listOf(
+            Micropost("test micropost1-1", user1).also { it.id = id1 },
+            Micropost("test micropost1-2", user1).apply { id = UUID.randomUUID() },
+            Micropost("test micropost2-1",
+                User("test user2", "user2@example.com").apply { id = UUID.randomUUID() }
+            ).apply { id = UUID.randomUUID() })
+    
     private val invalidContents = listOf("", " ", "　", "a".repeat(141))
 
 
     @BeforeEach
     fun setUp() {
-        every { ms.getAllMicroposts() } returns listOf(
-                Micropost("test micropost1-1", userId1).also { it.id = id1 },
-                Micropost("test micropost1-2", userId1).apply { id = UUID.randomUUID() },
-                Micropost("test micropost2-1", UUID.randomUUID()).apply { id = UUID.randomUUID() })
+        every { ms.getAllMicroposts() } returns microposts
 
         val slotUUID = slot<UUID>()
         every { ms.getMicropostById(capture(slotUUID)) } answers {
-            if (slotUUID.captured == id1) Micropost("test micropost1-1", userId1).also { it.id = id1 }
+            if (slotUUID.captured == id1) Micropost("test micropost1-1", user1).also { it.id = id1 }
             else null
         }
 
@@ -49,6 +57,10 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
         }
 
         every { ms.delete(any()) } just Runs
+
+        every { us.getUserById(capture(slotUUID)) } answers {
+            if (slotUUID.captured == user1.id) user1 else null
+        }
     }
 
     @Test
@@ -77,7 +89,8 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
                 .andExpect(model().attribute("micropost",
                         hasProperty<String>("content", `is`(micropost.content))))
                 .andExpect(model().attribute("micropost",
-                        hasProperty<String>("userId", `is`(micropost.userId))))
+                        hasProperty<User>("user",
+                                hasProperty<UUID>("id", `is`(micropost.user?.id)))))
 
         verify(atLeast = 1) { ms.getMicropostById(any()) }
     }
@@ -108,7 +121,8 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
                 .andExpect(model().attribute("micropost",
                         hasProperty<String>("content", `is`(""))))
                 .andExpect(model().attribute("micropost",
-                        hasProperty<String>("userId", nullValue())))
+                        hasProperty<User>("user",
+                                hasProperty<UUID>("id", nullValue()))))
     }
 
     @Test
@@ -123,7 +137,8 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
                 .andExpect(model().attribute("micropost",
                         hasProperty<String>("content", `is`(micropost.content))))
                 .andExpect(model().attribute("micropost",
-                        hasProperty<String>("userId", `is`(micropost.userId))))
+                        hasProperty<User>("user",
+                                hasProperty<UUID>("id", `is`(micropost.user?.id)))))
 
         verify(atLeast = 1) { ms.getMicropostById(any()) }
     }
@@ -146,19 +161,18 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
 
     @Test
     fun `microposts(POST) - マイクロポスト作成実行`() {
-        val content = "test micropost3"
-        val userId = UUID.randomUUID()
+        val content = "test micropost1-3"
 
         mvc.perform(post("/microposts")
                 .param("content", content)
-                .param("userId", userId.toString())
+                .param("user.id", user1.id.toString())
                 .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
                 .andExpect(status().is3xxRedirection)
                 .andExpect(view().name("redirect:/microposts"))
                 .andExpect(redirectedUrl("/microposts"))
                 .andExpect(flash().attribute("messages", isA<List<String>>(List::class.java)))
                 .andExpect(flash().attribute("messages",
-                        contains("micropost has been created by $userId!!")))
+                        contains("micropost has been created by ${user1.name}!!")))
 
         verify(atLeast = 1) { ms.save(any()) }
     }
@@ -168,7 +182,7 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
         invalidContents.forEach { content ->
             mvc.perform(post("/microposts")
                     .param("content", content)
-                    .param("userId", userId1.toString())
+                    .param("user.id", user1.id.toString())
                     .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
                     .andExpect(status().isOk)
                     .andExpect(view().name("microposts/new"))
@@ -183,30 +197,37 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
         //TODO("適切なエラー処理が必要")
         mvc.perform(post("/microposts")
                 .param("content", "test micropost3-1")
-                .param("userId", "invalid-userId")
+                .param("user.id", "invalid-user.id")
                 .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
-                .andExpect(status().isOk)
-                .andExpect(view().name("microposts/new"))
-                .andExpect(model().attribute("title", "Create micropost"))
-                .andExpect(model().attributeHasFieldErrorCode("micropost", "userId",
-                        `is`("typeMismatch")))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `microposts(POST) - マイクロポスト作成実行 - 存在しないユーザーID`() {
+        //TODO("適切なエラー処理が必要")
+        assertThatThrownBy {
+            mvc.perform(post("/microposts")
+                    .param("content", "test micropost3-1")
+                    .param("user.id", UUID.randomUUID().toString())
+                    .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
+                    .andExpect(status().isBadRequest)
+        }.hasCauseInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
     fun `microposts#{id}(POST) - マイクロポスト更新実行`() {
         val content = "test micropost1(update)"
-        val userId = UUID.randomUUID()
 
         mvc.perform(post("/microposts/$id1")
                 .param("content", content)
-                .param("userId", userId.toString())
+                .param("user.id", user1.id.toString())
                 .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
                 .andExpect(status().is3xxRedirection)
                 .andExpect(view().name("redirect:/microposts/$id1"))
                 .andExpect(redirectedUrl("/microposts/$id1"))
                 .andExpect(flash().attribute("messages", isA<List<String>>(List::class.java)))
                 .andExpect(flash().attribute("messages",
-                        contains("micropost has been updated by $userId!!")))
+                        contains("micropost has been updated by ${user1.name}!!")))
 
         verify(atLeast = 1) { ms.getMicropostById(id1) }
         verify(atLeast = 1) { ms.save(any()) }
@@ -215,13 +236,12 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
     @Test
     fun `microposts#{id}(POST) - マイクロポスト更新実行 - 存在しないマイクロポストID`() {
         val content = "invalid micropost(update)"
-        val userId = UUID.randomUUID()
 
         assertThatThrownBy {
             //TODO("適切なエラー処理が必要")
             mvc.perform(post("/microposts/${UUID.randomUUID()}")
                     .param("content", content)
-                    .param("userId", userId.toString())
+                    .param("user.id", user1.id.toString())
                     .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
 
         }.hasCauseInstanceOf(IllegalArgumentException::class.java)
@@ -230,24 +250,21 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
     @Test
     fun `microposts#{id}(POST) - マイクロポスト更新実行 - 無効なマイクロポストID`() {
         val content = "invalid micropost1-1(update)"
-        val userId = UUID.randomUUID()
 
         //TODO("適切なエラー処理が必要")
         mvc.perform(post("/microposts/invalid-id")
                 .param("content", content)
-                .param("userId", userId.toString())
+                .param("user.id", user1.toString())
                 .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
                 .andExpect(status().isBadRequest)
     }
 
     @Test
     fun `microposts#{id}(POST) - マイクロポスト更新実行 - 無効なコンテンツ`() {
-        val userId = UUID.randomUUID()
-
         invalidContents.forEach { content ->
             mvc.perform(post("/microposts/$id1")
                     .param("content", content)
-                    .param("userId", userId.toString())
+                    .param("user.id", user1.id.toString())
                     .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
                     .andExpect(status().isOk)
                     .andExpect(view().name("microposts/edit"))
@@ -264,13 +281,23 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
         //TODO("適切なエラー処理が必要")
         mvc.perform(post("/microposts/$id1")
                 .param("content", content)
-                .param("userId", "invalid-id")
+                .param("user.id", "invalid-id")
                 .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
-                .andExpect(status().isOk)
-                .andExpect(view().name("microposts/edit"))
-                .andExpect(model().attribute("title", "Edit micropost"))
-                .andExpect(model().attributeHasFieldErrorCode("micropost", "userId",
-                        `is`("typeMismatch")))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `microposts#{id}(POST) - マイクロポスト更新実行 - 存在しないユーザーID`() {
+        val content = "test micropost1(update)"
+
+        assertThatThrownBy {
+            //TODO("適切なエラー処理が必要")
+            mvc.perform(post("/microposts/$id1")
+                    .param("content", content)
+                    .param("user.id", UUID.randomUUID().toString())
+                    .with(SecurityMockMvcRequestPostProcessors.csrf())).andDo(print())
+                    .andExpect(status().isBadRequest)
+        }.hasCauseInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
@@ -285,7 +312,8 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
                 .andExpect(model().attribute("micropost",
                         hasProperty<String>("content", `is`(micropost.content))))
                 .andExpect(model().attribute("micropost",
-                        hasProperty<String>("userId", `is`(micropost.userId))))
+                        hasProperty<User>("user",
+                                hasProperty<UUID>("id", `is`(micropost.user?.id)))))
 
         verify(atLeast = 1) { ms.getMicropostById(any()) }
     }
@@ -315,7 +343,7 @@ class MicropostsControllerTests(@Autowired private val mvc: MockMvc) {
                 .andExpect(redirectedUrl("/microposts"))
                 .andExpect(flash().attribute("messages", isA<List<String>>(List::class.java)))
                 .andExpect(flash().attribute("messages",
-                        contains("micropost has been deleted by $userId1!!")))
+                        contains("micropost has been deleted by ${user1.name}!!")))
 
         verify(atLeast = 1) { ms.getMicropostById(id1) }
         verify(atLeast = 1) { ms.delete(any()) }

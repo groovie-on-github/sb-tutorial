@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
-class Micropost(content: String = "", userId: UUID? = null): BaseEntity() {
+class Micropost(content: String = "", user: User? = null): BaseEntity() {
 
     @NotBlank
     @Size(min = 1, max = 140)
@@ -17,7 +17,8 @@ class Micropost(content: String = "", userId: UUID? = null): BaseEntity() {
         set(value) { field = value.trim() }
 
     @NotNull
-    var userId: UUID? = userId
+    @ManyToOne
+    var user: User? = user
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,26 +27,25 @@ class Micropost(content: String = "", userId: UUID? = null): BaseEntity() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Micropost
+        if (other !is Micropost) return false
+        if (!super.equals(other)) return false
 
         if (content != other.content) return false
-        if (userId != other.userId) return false
+        if (user != other.user) return false
         if (id != other.id) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = content.hashCode()
-        result = 31 * result + (userId?.hashCode() ?: 0)
+        var result = super.hashCode()
+        result = 31 * result + content.hashCode()
+        result = 31 * result + (user?.hashCode() ?: 0)
         result = 31 * result + (id?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "Micropost(id=$id, content='$content', user=$userId)"
+        return "Micropost(id=$id, content='$content', ${super.toString()}, user=$user)"
     }
-
 }

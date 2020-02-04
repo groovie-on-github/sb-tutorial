@@ -30,9 +30,9 @@ abstract class TestDataSupplier(private val usersRepository: UsersRepository? = 
         }
 
         if(micropostsRepository != null) {
-            micropost11 = Micropost("test micropost1-1", user1.id)
-            micropost12 = Micropost("test micropost1-2", user1.id)
-            micropost21 = Micropost("test micropost2-1", user2.id)
+            micropost11 = Micropost("test micropost1-1", user1)
+            micropost12 = Micropost("test micropost1-2", user1)
+            micropost21 = Micropost("test micropost2-1", user2)
 
             micropostsRepository.saveAndFlush(micropost11)
             micropostsRepository.saveAndFlush(micropost12)

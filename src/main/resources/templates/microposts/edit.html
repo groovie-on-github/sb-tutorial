@@ -27,9 +27,9 @@
     <div class="form-group row">
         <label for="userId" class="col-sm-1 col-form-label"><strong>UserID</strong></label>
         <div class="col-sm-4">
-            <input id="userId" class="form-control" type="text" name="userId" th:value="*{userId}"
-                   th:field="*{userId}" th:errorclass="is-invalid" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">UserID error</div>
+            <input id="userId" class="form-control" type="text" name="user.id" th:value="*{user.id}"
+                   th:field="*{user.id}" th:errorclass="is-invalid" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('user.id')}" th:errors="*{user.id}">UserID error</div>
         </div>
     </div>
     <input class="btn btn-outline-secondary" type="submit" value="Update" th:value="|Update micropost|">

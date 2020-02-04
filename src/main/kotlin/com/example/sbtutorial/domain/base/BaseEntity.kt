@@ -8,9 +8,9 @@ import javax.persistence.PreUpdate
 @MappedSuperclass
 abstract class BaseEntity {
 
-    lateinit var createdAt: Date
+    var createdAt: Date? = null
 
-    lateinit var updatedAt: Date
+    var updatedAt: Date? = null
 
     @PrePersist
     fun onPrePersist() {
@@ -21,5 +21,26 @@ abstract class BaseEntity {
     @PreUpdate
     fun onPreUpdate() {
         updatedAt = Date()
+    }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BaseEntity) return false
+
+        if (createdAt != other.createdAt) return false
+        if (updatedAt != other.updatedAt) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = createdAt?.hashCode() ?: 0
+        result = 31 * result + (updatedAt?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "createdAt=$createdAt, updatedAt=$updatedAt"
     }
 }

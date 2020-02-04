@@ -1,6 +1,7 @@
 package com.example.sbtutorial.domain.micropost
 
 import com.example.sbtutorial.TestDataSupplier
+import com.example.sbtutorial.domain.user.User
 import com.example.sbtutorial.domain.user.UsersService
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.*
@@ -27,12 +28,12 @@ class MicropostsServiceTests @Autowired constructor(
 
     @Test
     fun `ユーザーの全てのマイクロポストを取得できる`() {
-        var microposts = ms.getAllMicroposts(user1.id!!)
+        var microposts = ms.getAllMicroposts(user1)
         assertThat(microposts)
                 .hasSize(2)
                 .containsOnly(micropost11, micropost12)
 
-        microposts = ms.getAllMicroposts(user2.id!!)
+        microposts = ms.getAllMicroposts(user2)
         assertThat(microposts)
                 .hasSize(1)
                 .containsOnly(micropost21)
@@ -40,7 +41,15 @@ class MicropostsServiceTests @Autowired constructor(
 
     @Test
     fun `存在しないユーザーの全てのマイクロポストを取得できる`() {
-        var microposts = ms.getAllMicroposts(UUID.randomUUID())
+        var microposts = ms.getAllMicroposts(
+                User("unknown user", "unknown@example.com").apply { id = UUID.randomUUID() })
+        assertThat(microposts).hasSize(0)
+    }
+
+    @Test
+    fun `登録されていないユーザーの全てのマイクロポストを取得できない`() {
+        var microposts = ms.getAllMicroposts(
+                User("unregistered user", "unreg@example.com"))
         assertThat(microposts).hasSize(0)
     }
 
@@ -58,7 +67,7 @@ class MicropostsServiceTests @Autowired constructor(
 
     @Test
     fun `マイクロポストを保存できる`() {
-        val micropost13 = Micropost("test micropost3", user1.id)
+        val micropost13 = Micropost("test micropost3", user1)
         assertThat(micropost13.id).isNull()
         val save = ms.save(micropost13)
         assertThat(micropost13.id).isNotNull()
