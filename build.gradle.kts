@@ -36,6 +36,7 @@ dependencies {
 	implementation("org.webjars:jquery:3.4.1")
 	implementation("org.webjars:webjars-locator:0.38")
 	runtimeOnly("com.h2database:h2")
+	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

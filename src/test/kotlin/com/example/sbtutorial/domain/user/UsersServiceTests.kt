@@ -1,6 +1,5 @@
 package com.example.sbtutorial.domain.user
 
-import com.example.sbtutorial.TestDataSupplier
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,22 +8,27 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @Transactional
-class UsersServiceTests (@Autowired private val us: UsersService
-    ): TestDataSupplier(usersRepository = us.repository) {
+class UsersServiceTests (@Autowired private val us: UsersService) {
 
     @Test
     fun `全てのユーザーを取得できる`() {
         val users = us.getAllUsers()
         assertThat(users).hasSize(3)
-                .containsOnly(user1, user1a, user2)
+            .extracting("email")
+                .containsExactlyInAnyOrder(
+                    "user1@example.com",
+                    "user1.alternate@example.com",
+                    "user2@example.com")
     }
 
     @Test
     fun `IDでユーザーを取得できる`() {
-        val user = us.getUserById(user1.id!!)
-        assertThat(user)
-                .hasFieldOrPropertyWithValue("name", "test user1")
-                .hasFieldOrPropertyWithValue("email", "user1@example.com")
+        val user1 = us.getAllUsers().find { it.email == "user1@example.com" }!!
+
+        val found = us.getUserById(user1.id!!)
+        assertThat(found)
+            .hasFieldOrPropertyWithValue("name", "test user1")
+            .hasFieldOrPropertyWithValue("email", "user1@example.com")
     }
 
     @Test
@@ -36,12 +40,14 @@ class UsersServiceTests (@Autowired private val us: UsersService
         val found = us.getUserById(user.id!!)
         assertThat(found?.id).isNotNull()
         assertThat(found)
-                .hasFieldOrPropertyWithValue("name", "test user3")
-                .hasFieldOrPropertyWithValue("email", "user3@example.com")
+            .hasFieldOrPropertyWithValue("name", "test user3")
+            .hasFieldOrPropertyWithValue("email", "user3@example.com")
     }
 
     @Test
     fun `ユーザーを削除できる`() {
+        val user1 = us.getAllUsers().find { it.email == "user1@example.com" }!!
+
         us.delete(user1)
 
         val found = us.getUserById(user1.id!!)

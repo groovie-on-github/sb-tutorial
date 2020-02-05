@@ -1,6 +1,5 @@
 package com.example.sbtutorial.domain.micropost
 
-import com.example.sbtutorial.TestDataSupplier
 import com.example.sbtutorial.domain.user.User
 import com.example.sbtutorial.domain.user.UsersRepository
 import org.assertj.core.api.Assertions.*
@@ -13,21 +12,25 @@ import java.util.*
 @DataJpaTest(showSql = true)
 class MicropostsRepositoryTests @Autowired constructor(
         private val mr: MicropostsRepository,
-        ur: UsersRepository
-    ): TestDataSupplier(usersRepository = ur,
-                        micropostsRepository = mr) {
+        private val ur: UsersRepository) {
 
     @Test
     fun `ユーザーで検索する`() {
+        val user1 = ur.findByEmail("user1@example.com")!!
+
         var microposts = mr.findAllByUser(user1)
         assertThat(microposts)
-                .hasSize(2)
-                .containsOnly(micropost11, micropost12)
+            .hasSize(2)
+            .extracting("content")
+                .containsExactlyInAnyOrder("test micropost1-1", "test micropost1-2")
 
+
+        val user2 = ur.findByEmail("user2@example.com")!!
         microposts = mr.findAllByUser(user2)
         assertThat(microposts)
-                .hasSize(1)
-                .containsOnly(micropost21)
+            .hasSize(1)
+            .extracting("content")
+                .containsExactly("test micropost2-1")
     }
 
     @Test

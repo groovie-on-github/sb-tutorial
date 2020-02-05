@@ -8,6 +8,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
 @Entity
+@Table(name = "\"user\"")//'user'はDBMSの予約語の為、HerokuでAuto-DDLを使用する場合エスケープが必要)
 class User(name: String = "", email: String = ""): BaseEntity() {
 
     @NotBlank

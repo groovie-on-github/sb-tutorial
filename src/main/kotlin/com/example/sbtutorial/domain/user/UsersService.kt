@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class UsersService(val repository: UsersRepository) {
+class UsersService(private val repository: UsersRepository) {
 
     fun getAllUsers(): List<User> = repository.findAll()
 

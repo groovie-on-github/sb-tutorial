@@ -1,9 +1,11 @@
 package com.example.sbtutorial.controller
 
-import com.example.sbtutorial.TestDataSupplier
+import com.example.sbtutorial.domain.micropost.Micropost
 import com.example.sbtutorial.domain.micropost.MicropostsService
+import com.example.sbtutorial.domain.user.User
 import com.example.sbtutorial.domain.user.UsersService
 import org.assertj.core.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,12 +25,18 @@ class MicropostsControllerIT
         @Autowired constructor(
             private val mvc: MockMvc,
             private val ms: MicropostsService,
-            us: UsersService
-        ): TestDataSupplier(usersRepository = us.repository,
-                            micropostsRepository = ms.repository) {
+            private val us: UsersService) {
 
+    private lateinit var micropost11: Micropost
+    private lateinit var user1: User
 
     private val invalidContents = listOf("", " ", "　", "a".repeat(141))
+
+    @BeforeEach
+    fun setUp() {
+        micropost11 = ms.getAllMicroposts().first { it.content == "test micropost1-1" }
+        user1 = us.getAllUsers().first { it.email == "user1@example.com" }
+    }
 
     @Test
     fun `microposts(GET)アクセス - マイクロポスト一覧表示`() {
@@ -41,6 +49,9 @@ class MicropostsControllerIT
                 )
                 .andExpect(status().isOk)
                 .andReturn()
+
+        val micropost12 = ms.getAllMicroposts().first { it.content == "test micropost1-2" }
+        val micropost21 = ms.getAllMicroposts().first { it.content == "test micropost2-1" }
 
         val content = result.response.contentAsString
         assertThat(content)

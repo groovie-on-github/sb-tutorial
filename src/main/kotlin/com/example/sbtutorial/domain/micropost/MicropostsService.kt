@@ -9,7 +9,7 @@ import java.lang.IllegalStateException
 import java.util.*
 
 @Service
-class MicropostsService(val repository: MicropostsRepository) {
+class MicropostsService(private val repository: MicropostsRepository) {
 
     // ロガー
     private val log = LogFactory.getLog(MicropostsService::class.java)

@@ -1,8 +1,9 @@
 package com.example.sbtutorial.controller
 
-import com.example.sbtutorial.TestDataSupplier
+import com.example.sbtutorial.domain.user.User
 import com.example.sbtutorial.domain.user.UsersService
 import org.assertj.core.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -21,11 +22,17 @@ import java.util.*
 class UsersControllerIT
         @Autowired constructor(
             private val mvc: MockMvc,
-            private val us: UsersService
-        ): TestDataSupplier(usersRepository = us.repository){
+            private val us: UsersService) {
+
+    private lateinit var user1: User
 
     private val invalidNames = listOf("", " ", "　")
     private val invalidEmails = listOf("", " ", "　", "user3.e-mail.address")
+
+    @BeforeEach
+    fun setUp() {
+        user1 = us.getAllUsers().first { it.email == "user1@example.com" }
+    }
 
     @Test
     fun `users(GET)アクセス - ユーザー一覧表示`() {
@@ -39,16 +46,20 @@ class UsersControllerIT
                 .andExpect(status().isOk)
                 .andReturn()
 
+        val user1a = us.getAllUsers().first { it.email == "user1.alternate@example.com" }
+        val user2 = us.getAllUsers().first { it.email == "user2@example.com" }
+
         val content = result.response.contentAsString
         assertThat(content)
-                .contains("<title>Listing users</title>")
-                .contains("<h1>Listing users</h1>")
-                .contains("<td>${user1.name}</td>").contains("<td>${user1.email}</td>")
-                .contains("<td>${user1a.name}</td>").contains("<td>${user1a.email}</td>")
-                .contains("<td>${user2.name}</td>").contains("<td>${user2.email}</td>")
-                .contains("href=\"users/${user1.id}\"")
-                .contains("href=\"users/${user2.id}\"")
-                .contains("<li>${message1}</li>").contains("<li>${message2}</li>")
+            .contains("<title>Listing users</title>")
+            .contains("<h1>Listing users</h1>")
+            .contains("<td>${user1.name}</td>").contains("<td>${user1.email}</td>")
+            .contains("<td>${user1a.name}</td>").contains("<td>${user1a.email}</td>")
+            .contains("<td>${user2.name}</td>").contains("<td>${user2.email}</td>")
+            .contains("href=\"users/${user1.id}\"")
+            .contains("href=\"users/${user1a.id}\"")
+            .contains("href=\"users/${user2.id}\"")
+            .contains("<li>${message1}</li>").contains("<li>${message2}</li>")
     }
 
     @Test
@@ -59,9 +70,9 @@ class UsersControllerIT
 
         val content = result.response.contentAsString
         assertThat(content)
-                .contains("<title>Show user</title>")
-                .contains("<h1>Show user</h1>")
-                .contains(user1.name).contains(user1.email)
+            .contains("<title>Show user</title>")
+            .contains("<h1>Show user</h1>")
+            .contains(user1.name).contains(user1.email)
     }
 
     @Test
@@ -85,10 +96,10 @@ class UsersControllerIT
 
         val content = result.response.contentAsString
         assertThat(content)
-                .contains("<title>Create user</title>")
-                .contains("<h1>Create user</h1>")
-                .contains("action=\"/users\"")
-                .contains("method=\"post\"")
+            .contains("<title>Create user</title>")
+            .contains("<h1>Create user</h1>")
+            .contains("action=\"/users\"")
+            .contains("method=\"post\"")
     }
 
     @Test
@@ -99,11 +110,11 @@ class UsersControllerIT
 
         val content = result.response.contentAsString
         assertThat(content)
-                .contains("<title>Edit user</title>")
-                .contains("<h1>Edit user</h1>")
-                .contains("action=\"/users/${user1.id}\"")
-                .contains("method=\"post\"")
-                .contains("value=\"${user1.name}\"").contains("value=\"${user1.email}\"")
+            .contains("<title>Edit user</title>")
+            .contains("<h1>Edit user</h1>")
+            .contains("action=\"/users/${user1.id}\"")
+            .contains("method=\"post\"")
+            .contains("value=\"${user1.name}\"").contains("value=\"${user1.email}\"")
     }
 
     @Test
@@ -318,7 +329,7 @@ class UsersControllerIT
     @Test
     fun `users#{id}(POST)アクセス - ユーザー更新 - 重複メールアドレス`() {
         val name = "test user1(duplicate email)"
-        val email = user2.email
+        val email = "user1@example.com"
 
         var user = us.getAllUsers().find { it.email == name }
         assertThat(user).isNull()
