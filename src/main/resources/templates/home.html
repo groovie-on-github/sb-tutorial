@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Home</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1>Sample App</h1>
+  <p>
+    This is the home page for the
+    <a href="#" th:href="@{https://spring.io/projects/spring-boot}">Spring Boot</a>
+    sample application.
+  </p>
+</th:block>
+</body>
+</html>

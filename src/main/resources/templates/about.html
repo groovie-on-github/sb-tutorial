@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>About</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1>About</h1>
+  <p>
+    <a href="#" th:href="@{https://spring.io/projects/spring-boot}">Spring Boot</a>
+    <br>
+    This is the sample application for the tutorial.
+  </p>
+</th:block>
+</body>
+</html>

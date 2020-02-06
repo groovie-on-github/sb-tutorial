@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Contact</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1>Contact</h1>
+  <p>
+    <a href="#" th:href="@{#}">Contact us</a>
+  </p>
+</th:block>
+</body>
+</html>

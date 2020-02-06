@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Help</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1>Help</h1>
+  <p>
+    Get help on the Spring Boot at the
+    <a href="#" th:href="@{https://docs.spring.io/spring-boot/docs/2.2.4.RELEASE/reference/html}">
+    Spring Boot reference page</a>.
+  </p>
+</th:block>
+</body>
+</html>

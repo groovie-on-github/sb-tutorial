@@ -43,6 +43,7 @@ dependencies {
 	}
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("com.ninja-squad:springmockk:2.0.0")
+	testImplementation("net.sourceforge.htmlunit:htmlunit:2.37.0")
 }
 
 tasks.withType<Test> {

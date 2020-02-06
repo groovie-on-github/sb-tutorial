@@ -16,8 +16,6 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
             .authorizeRequests()
                 // ルート直下のアクセスは許可する
                 .mvcMatchers("/*").permitAll()
-                // リソースへのアクセスは許可する
-                .mvcMatchers("/users/**", "/microposts/**").permitAll()
                 // 静的リソースへのアクセスは許可する
                 .mvcMatchers("/webjars/**").permitAll()
 
