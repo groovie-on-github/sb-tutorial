@@ -1,5 +1,6 @@
 package com.example.sbtutorial.controller
 
+import com.example.sbtutorial.helper.TitleHelper
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import org.assertj.core.api.Assertions.*
@@ -7,12 +8,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.http.HttpStatus
 
-@WebMvcTest(StaticPagesController::class)
+@WebMvcTest(StaticPagesController::class,
+    includeFilters = [ComponentScan.Filter(TitleHelper::class, type = FilterType.ASSIGNABLE_TYPE)])
 class StaticPagesControllerIT(@Autowired private val client: WebClient) {
 
-    private val baseTitle = "Spring Boot Sample App"
+    private val baseTitle = TitleHelper.BASE_TITLE
 
     @BeforeEach
     fun setUp() {
@@ -23,7 +27,7 @@ class StaticPagesControllerIT(@Autowired private val client: WebClient) {
     fun `should get root`() {
         val page = client.getPage<HtmlPage>("/")
         assertThat(page.webResponse.statusCode).isEqualTo(HttpStatus.OK.value())
-        assertThat(page.titleText).isEqualTo("Home | $baseTitle")
+        assertThat(page.titleText).isEqualTo(baseTitle)
         val h1s = page.getElementsByTagName("h1")
         assertThat(h1s).hasSize(1)
         assertThat(h1s[0].textContent).isEqualTo("Sample App")
@@ -33,7 +37,7 @@ class StaticPagesControllerIT(@Autowired private val client: WebClient) {
     fun `should get home`() {
         val page = client.getPage<HtmlPage>("/")
         assertThat(page.webResponse.statusCode).isEqualTo(HttpStatus.OK.value())
-        assertThat(page.titleText).isEqualTo("Home | $baseTitle")
+        assertThat(page.titleText).isEqualTo(baseTitle)
         val h1s = page.getElementsByTagName("h1")
         assertThat(h1s).hasSize(1)
         assertThat(h1s[0].textContent).isEqualTo("Sample App")

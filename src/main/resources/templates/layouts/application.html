@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
 
-  <title th:text="#{${title_key}} + ' | Spring Boot Sample App'"></title>
+  <title th:text="${@titleHelper.getFullTitle(title)}" th:with="title = #{${title_key}}"></title>
 </head>
 <body>
 
@@ -14,7 +14,7 @@
     <div th:replace="${content_body}">Contents</div>
   </div>
 
-<script th:src="@{/webjars/jquery/jquery.slim.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/webjars/jquery/jquery.slim.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
