@@ -33,3 +33,9 @@ out/
 
 ### some test ###
 **/src/test/**/SomeTests.kt
+
+### node ###
+/node_modules/
+
+### generated css ###
+src/main/resources/static/css

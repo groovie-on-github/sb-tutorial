@@ -5,12 +5,22 @@
 </head>
 <body>
 <th:block th:fragment="content">
-  <h1>Sample App</h1>
-  <p>
-    This is the home page for the
-    <a href="#" th:href="@{https://spring.io/projects/spring-boot}">Spring Boot</a>
-    sample application.
-  </p>
+  <div class="center jumbotron">
+    <div class="mx-auto">
+      <h1 th:text="#{view.home.heading}">Welcome to the Sample App</h1>
+
+      <h2 th:utext="#{view.home.heading.message(~{::link})}">
+        This is the home page for the
+        <a class="text-success" href="https://spring.io/projects/spring-boot" th:fragment="link">Spring Boot</a>
+        sample application.
+      </h2>
+
+      <a href="#" th:href="@{/signup}" class="btn btn-lg btn-success" th:text="#{view.home.button.text}">Sign up now!</a>
+    </div>
+  </div>
+  <a href="https://spring.io/projects/spring-boot">
+    <img src="#" th:src="@{/images/spring.png}" with="160" height="52" alt="Spring logo">
+  </a>
 </th:block>
 </body>
 </html>

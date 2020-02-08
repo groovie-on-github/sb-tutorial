@@ -24,11 +24,6 @@ class StaticPagesController: BaseController() {
     private val log = LogFactory.getLog(StaticPagesController::class.java)
 
     @GetMapping("/")
-    fun root(mav: ModelAndView): ModelAndView {
-        return home(mav)
-    }
-
-    @GetMapping("/home")
     fun home(mav: ModelAndView): ModelAndView {
         log.debug("#home called!!")
 

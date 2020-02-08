@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="main(content_body)">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-
-  <title th:text="${@titleHelper.getFullTitle(title)}" th:with="title = #{${title_key}}"></title>
-</head>
+<head th:replace="layouts/_head"></head>
 <body>
+  <header th:replace="layouts/_header"></header>
 
   <div class="container mt-2">
     <div th:replace="${content_body}">Contents</div>
+    <footer th:replace="layouts/_footer"></footer>
   </div>
 
   <script th:src="@{/webjars/jquery/jquery.slim.min.js}"></script>
