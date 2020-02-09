@@ -38,7 +38,7 @@ class SiteLayoutTests(@Autowired private val client: WebClient): BaseTestSetup(c
 
     @Test
     fun `sign up page`() {
-        var page = client.getPage<HtmlPage>("/signup")
+        val page = client.getPage<HtmlPage>("/signup")
         assertThat(page.titleText).isEqualTo(getFullTitle("Sign up"))
     }
 }
