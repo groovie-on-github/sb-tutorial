@@ -5,8 +5,41 @@
 </head>
 <body>
 <th:block th:fragment="content">
-  <h1>Sign up</h1>
-  <p>This will be a signup page for new users.</p>
+  <h1 th:text="#{view.users.new.heading}">Sign up</h1>
+
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form action="#" th:action="@{/signup}" method="post" th:object="${userForm}">
+        <th:block th:replace="shared/_error_messages"></th:block>
+
+        <div class="form-group">
+          <label for="name" th:text="#{userForm.name}">Name:</label>
+          <input id="name" class="form-control" type="text" th:field="*{name}" value="user.name"
+                 th:errorclass="field_with_errors">
+        </div>
+
+        <div class="form-group">
+          <label for="email" th:text="#{userForm.email}">Email:</label>
+          <input id="email" class="form-control" type="email" th:field="*{email}" value="user.email"
+                 th:errorclass="field_with_errors">
+        </div>
+
+        <div class="form-group">
+          <label for="password" th:text="#{userForm.password}">Password:</label>
+          <input id="password" class="form-control" type="password" th:field="*{password}" value="user.password"
+                 th:errorclass="field_with_errors">
+        </div>
+
+        <div class="form-group">
+          <label for="passwordConfirmation" th:text="#{userForm.passwordConfirmation}">Confirmation:</label>
+          <input id="passwordConfirmation" class="form-control" type="password" th:field="*{passwordConfirmation}"
+                 value="user.passwordConfirmation" th:errorclass="field_with_errors">
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Create my account" th:value="#{view.users.new.submit}">
+      </form>
+    </div>
+  </div>
 </th:block>
 </body>
 </html>

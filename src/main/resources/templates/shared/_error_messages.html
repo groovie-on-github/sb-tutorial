@@ -1,0 +1,13 @@
+<div id="error_explanation" th:if="${#fields.hasErrors('*')}">
+  <div class="alert alert-danger">
+    <th:block th:text="${@pluralHelper.pluralize(pattern, locale, size)}"
+     th:with="pattern = #{view.shared.errors},
+              locale = ${#locale},
+              size = ${#lists.size(#fields.allErrors())}">
+      The form contains some errors.
+    </th:block>
+  </div>
+  <ul th:if="${#fields.hasAnyErrors()}">
+    <li th:each="err : ${#fields.allErrors()}" th:text="${err}">Input is incorrect</li>
+  </ul>
+</div>

@@ -5,8 +5,15 @@
   <header th:replace="layouts/_header"></header>
 
   <div class="container mt-2">
+    <th:block th:each="entry : ${flash}">
+      <div th:class="|alert alert-${entry.key}|"
+           th:text="${#messages.msgOrNull(entry.value) ?: entry.value}"></div>
+    </th:block>
+
     <div th:replace="${content_body}">Contents</div>
     <footer th:replace="layouts/_footer"></footer>
+
+    <div th:replace="layouts/_debug" th:if="${@environment.getProperty('view.debug')}"></div>
   </div>
 
   <script th:src="@{/webjars/jquery/jquery.slim.min.js}"></script>

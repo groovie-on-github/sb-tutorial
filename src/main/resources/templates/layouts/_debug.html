@@ -1,0 +1,74 @@
+<div class="debug_dump border p-3 rounded bg-light">
+  <h2>Debug Mode</h2>
+  <div th:unless="${#maps.isEmpty(param)}">
+    <p>Params:</p>
+    <th:block th:each="p,stat : ${param}">
+      <th:block th:switch="${#strings.containsIgnoreCase(p.key, 'password')}">
+        <th:block th:case="true" th:text="|${p.key}=[FILTERED]|"></th:block>
+        <th:block th:case="false" th:text="|${p.key}=${{p.value}}|"></th:block>
+        <th:block th:unless="${stat.last}"><br></th:block>
+      </th:block>
+    </th:block>
+  </div>
+  <br>
+  <div>
+    <p>Cookies:</p>
+    <th:block th:each="c,statC : ${#request.cookies}">
+      [[|${c.name}=${c.value}|]]
+      <th:block th:if="${statC.first}"><br></th:block>
+      <th:block th:unless="${statC.last}"><br></th:block>
+    </th:block>
+  </div>
+  <br>
+  <div>
+    <p>Headers:</p>
+    <th:block th:each="hn,statHn : ${#request.headerNames}">
+      [[|${hn}=${#request.getHeader(hn)}|]]
+      <th:block th:if="${statHn.first}"><br></th:block>
+      <th:block th:unless="${statHn.last}"><br></th:block>
+    </th:block>
+  </div>
+  <br>
+  <div>
+    <p>Locale:</p>
+      [[|#locale=${#locale}|]]
+  </div>
+<!--/*
+  <br>
+  <div>
+    <p>Parameters:</p>
+    <th:block th:each="pn,statPn : ${#request.parameterNames}">
+      <th:block th:switch="${#strings.containsIgnoreCase(pn, 'password')}">
+        <th:block th:case="true" th:text="|${pn}=[FILTERED]|"></th:block>
+        <th:block th:case="false" th:text="|${pn}=${{#request.getParameterValues(pn)}}|"></th:block>
+      </th:block>
+      <th:block th:if="${statPn.first}"><br></th:block>
+      <th:block th:unless="${statPn.last}"><br></th:block>
+    </th:block>
+  </div>
+*/-->
+<!--/*
+  <br>
+  <div>
+    <p>Attributes:</p>
+    <th:block th:each="an,statAn : ${#request.attributeNames}">
+      [[|${an}=${#request.getAttribute(an)}|]]
+      <th:block th:if="${statAn.first}"><br></th:block>
+      <th:block th:unless="${statAn.last}"><br></th:block>
+    </th:block>
+  </div>
+*/-->
+<!--/*
+  <br>
+  <div>
+    <p>Basic Objects:</p>
+    <p>#ctx = [[${#ctx}]]</p>
+    <p>#vars = [[${#vars}]]</p>
+    <p>#locale = [[${#locale}]]</p>
+    <p>#request = [[${#request}]]</p>
+    <p>#response = [[${#response}]]</p>
+    <p>#session = [[${#session}]]</p>
+    <p>#servletContext = [[${#servletContext}]]</p>
+  </div>
+*/-->
+</div>

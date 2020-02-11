@@ -10,7 +10,10 @@ class UsersServiceTests(@Autowired private val us: UsersService) {
 
     @Test
     fun `default user`() {
-        val defaultUser = us.findByEmail("mhartl@example.com")
+        val defaultUser = us.findByEmail("example@railstutorial.org")
         assertThat(defaultUser).isNotNull
+        assertThat(defaultUser!!.id).isNotNull()
+        assertThat(defaultUser.createdAt).isNotNull()
+        assertThat(defaultUser.updatedAt).isNotNull()
     }
 }

@@ -2,6 +2,7 @@ package com.example.sbtutorial.model.user
 
 import com.example.sbtutorial.model.IHavePassword
 import com.example.sbtutorial.validation.PasswordConfirm
+import java.util.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
@@ -10,6 +11,12 @@ import javax.validation.constraints.Size
 @PasswordConfirm(message = "{user.passwordConfirmation.PasswordConfirm}")
 class UserForm(name: String = "", email: String = "",
                password: String = "", passwordConfirmation: String = ""): IHavePassword {
+
+    companion object {
+        fun from(user: User): UserForm = UserForm(user.name, user.email).apply { id = user.id }
+    }
+
+    var id: UUID? = null
 
     @NotBlank(message = "{user.name.NotBlank}")
     @Size(max = User.NAME_LENGTH_MAX, message = "{user.name.Size}")

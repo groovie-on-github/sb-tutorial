@@ -36,6 +36,7 @@ dependencies {
 	implementation("org.webjars:bootstrap:4.4.1")
 	implementation("org.webjars:jquery:3.4.1")
 	implementation("org.webjars:webjars-locator:0.38")
+	implementation("com.ibm.icu:icu4j:65.1")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

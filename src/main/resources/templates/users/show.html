@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Show User</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <div class="row">
+    <aside class="col-md-4">
+      <section class="user_info" th:object="${userForm}">
+        <h1>
+          <img class="gravatar" src="#" th:src="${@usersHelper.gravatarFor(userForm.email, gravatarOpts)}"
+               alt="user.name" th:alt="${userForm.name}">
+          [[*{name}]]
+        </h1>
+      </section>
+    </aside>
+  </div>
+</th:block>
+</body>
+</html>

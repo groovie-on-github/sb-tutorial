@@ -10,7 +10,6 @@ class StaticPagesController: BaseController() {
 
     companion object {
         private const val BASE_TITLE_KEY = "view"
-        private const val TITLE_KEY_HOME = "${BASE_TITLE_KEY}.home.title"
         private const val TITLE_KEY_HELP = "${BASE_TITLE_KEY}.help.title"
         private const val TITLE_KEY_ABOUT = "${BASE_TITLE_KEY}.about.title"
         private const val TITLE_KEY_CONTACT = "${BASE_TITLE_KEY}.contact.title"
@@ -28,7 +27,6 @@ class StaticPagesController: BaseController() {
         log.debug("#home called!!")
 
         mav.viewName = VIEW_NAME_HOME
-        mav.model[TITLE_KEY] = TITLE_KEY_HOME
 
         log.debug(">> $mav")
         return mav
