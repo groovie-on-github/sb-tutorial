@@ -4,6 +4,9 @@ import com.example.sbtutorial.model.user.User
 import com.example.sbtutorial.model.user.UserForm
 import com.example.sbtutorial.model.user.UsersService
 import org.apache.commons.logging.LogFactory
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.validation.BindingResult
@@ -15,10 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
 
 @Controller
-class UsersController(private val us: UsersService): BaseController() {
+class UsersController(private val us: UsersService,
+                      private val am: AuthenticationManager): BaseController() {
 
     companion object {
-        private const val BASE_PATH = "/users"
+        const val BASE_PATH = "/users"
 
         private const val BASE_TITLE_KEY = "view.users"
         private const val TITLE_KEY_SHOW = "${BASE_TITLE_KEY}.show.title"
@@ -90,6 +94,12 @@ init { log.debug(us.findAll()[0].id) }
 
         } else {
             val saved = us.save(userForm.populate(User()))
+
+            // ログイン処理を行う
+            val authRequest = UsernamePasswordAuthenticationToken(saved.email, saved.password)
+            val authResult = am.authenticate(authRequest)
+            SecurityContextHolder.getContext().authentication = authResult
+
             mav.viewName = "redirect:$BASE_PATH/${saved.id}"
             redirect.addFlashAttribute("flash",
                 mapOf("success" to "view.users.show.welcome"))

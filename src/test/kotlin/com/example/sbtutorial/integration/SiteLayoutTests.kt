@@ -1,10 +1,9 @@
 package com.example.sbtutorial.integration
 
-import com.example.sbtutorial.BaseTestUseDataJpa
+import com.example.sbtutorial.BaseTestSetup
 import com.example.sbtutorial.controller.StaticPagesController
 import com.example.sbtutorial.controller.UsersController
 import com.example.sbtutorial.helper.TitleHelper.getFullTitle
-import com.example.sbtutorial.model.user.UsersService
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlElement
 import com.gargoylesoftware.htmlunit.html.HtmlPage
@@ -12,12 +11,9 @@ import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.FilterType
 
-@WebMvcTest(StaticPagesController::class, UsersController::class,
-    includeFilters = [ComponentScan.Filter(UsersService::class, type = FilterType.ASSIGNABLE_TYPE)])
-class SiteLayoutTests(@Autowired private val client: WebClient): BaseTestUseDataJpa(client) {
+@WebMvcTest(StaticPagesController::class, UsersController::class)
+class SiteLayoutTests(@Autowired private val client: WebClient): BaseTestSetup(client) {
 
     @Test
     fun `layout links`() {

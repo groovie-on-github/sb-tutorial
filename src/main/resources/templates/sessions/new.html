@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Sign up</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1 th:text="#{view.sessions.new.title}">Sign up</h1>
+
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form action="#" th:action="@{/login}" method="post">
+        <div class="form-group">
+          <label for="email" th:text="#{userForm.email}">Email:</label>
+          <input id="email" class="form-control" type="email" name="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password" th:text="#{userForm.password}">Password:</label>
+          <input id="password" class="form-control" type="password" name="password">
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Log in" th:value="#{view.sessions.new.submit}">
+      </form>
+
+      <p>[[#{view.sessions.new.new-user}]]
+        <a href="#" th:href="@{/signup}" th:text="#{view.sessions.new.sign-up}">Sign up</a>
+      </p>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

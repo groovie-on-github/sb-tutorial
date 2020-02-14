@@ -1,7 +1,10 @@
 <header class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
-  <div class="container">
+  <div class="container" th:with="loggedIn = ${@sessionsHelper.loggedIn}">
     <a id="logo" class="" href="#" th:href="@{/}" th:text="#{view.layouts.header.logo}">sample app</a>
-    <nav class="collapse navbar-collapse justify-content-end">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <nav id="navbarSupportedContent" class="collapse navbar-collapse justify-content-end">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="#" th:href="@{/}" th:text="#{view.layouts.header.home}">Home</a>
@@ -9,9 +12,29 @@
         <li class="nav-item">
           <a class="nav-link" href="#" th:href="@{/help}" th:text="#{view.layouts.header.help}">Help</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" th:href="@{#}" th:text="#{view.layouts.header.login}">Log in</a>
+        <th:block th:if="${loggedIn}">
+        <li class="nav-item"><a class="nav-link" href="#" th:text="#{view.layouts.header.users}">Users</a></li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" id="navbarDropdownMenuLink">
+            [[#{view.layouts.header.account}]]
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#" th:href="@{/users/{userId}(userId = ${@sessionsHelper.currentId})}"
+               th:text="#{view.layouts.header.profile}">Profile</a>
+            <a class="dropdown-item" href="#" th:href="@{#}" th:text="#{view.layouts.header.settings}">Settings</a>
+            <div class="dropdown-divider"></div>
+            <form action="#" th:action="@{/logout}" method="post">
+              <input class="btn btn-link dropdown-item m-0" type="submit" value="Log out"
+                     th:value="#{view.layouts.header.logout}">
+            </form>
+          </div>
         </li>
+        </th:block>
+        <th:block th:unless="${loggedIn}">
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/login}" th:text="#{view.layouts.header.login}">Log in</a>
+        </li>
+        </th:block>
       </ul>
     </nav>
   </div>
