@@ -31,4 +31,44 @@ object TestHelper {
         assertThat(page.getByXPath<HtmlElement>("//a[starts-with(@href, '/users/${id ?: ""}')]"))
             .hasSize(if(loggedIn) 1 else 0)
     }
+
+    fun get(mvc: MockMvc, path: String, params: Map<String, String>,
+                session: MockHttpSession? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
+        return mvc.perform(get(path)
+            .apply {
+                params.forEach { (k, v) ->
+                    param(k, v)
+                }
+            }
+            .apply { if(session != null) session(session) }
+            .apply { if(cookies.isNotEmpty()) cookie(*cookies) }
+        ).andReturn()
+    }
+
+    fun post(mvc: MockMvc, path: String, params: Map<String, String>,
+            session: MockHttpSession? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
+        return mvc.perform(post(path)
+            .apply {
+                params.forEach { (k, v) ->
+                    param(k, v)
+                }
+            }
+            .apply { if(session != null) session(session) }
+            .apply { if(cookies.isNotEmpty()) cookie(*cookies) }
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+        ).andReturn()
+    }
+
+    fun loginAs(mvc: MockMvc, user: User, rememberMe: Boolean,
+                session: MockHttpSession? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
+
+        return post(mvc, "/login",
+            mapOf("email" to user.email, "password" to "password", "remember-me" to if(rememberMe) "1" else "0"),
+            session, *cookies)
+    }
+
+    fun logout(mvc: MockMvc, session: MockHttpSession): MvcResult {
+        val result = post(mvc, "/logout", emptyMap(), session)
+        return get(mvc, result.response.redirectedUrl!!, emptyMap(), result.request.session as MockHttpSession)
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.sbtutorial.integration
 
 import com.example.sbtutorial.BaseTestSetup
+import com.example.sbtutorial.auth.AuthProperties
 import com.example.sbtutorial.controller.SessionsController
 import com.example.sbtutorial.controller.StaticPagesController
 import com.example.sbtutorial.controller.UsersController
@@ -20,14 +21,16 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import java.time.Duration
 
 @WebMvcTest(SessionsController::class, StaticPagesController::class, UsersController::class)
 class UsersLoginTests @Autowired constructor(
-    private val us: UsersService,
-    private val mvc: MockMvc,
-    private val client: WebClient): BaseTestSetup(client) {
+    private val us: UsersService, private val authProperties: AuthProperties,
+    private val mvc: MockMvc, private val client: WebClient): BaseTestSetup(client) {
 
     private lateinit var user: User
+
+    private val rememberMe = authProperties.rememberMe
 
     @BeforeEach
     override fun setUp() {
@@ -182,5 +185,80 @@ class UsersLoginTests @Autowired constructor(
         val indexPage = TH.parseHtml(result.response.contentAsString, client)
         // ヘッダーメニューのリンクチェック
         TH.checkHeaderMenu(indexPage, false)
+    }
+
+    @Test
+    fun `login with remembering`() {
+        // クッキーを保存してログイン
+        val loginResult = TH.loginAs(mvc, user, true)
+
+        assertThat(loginResult.response.cookies)
+            .filteredOn { it.name == rememberMe.cookieName }
+            .isNotEmpty
+            .satisfies {
+                assertThat(it[0].isHttpOnly).isTrue()
+                assertThat(it[0].maxAge)
+                    .isEqualTo(Duration.ofDays(rememberMe.tokenValidityDays).seconds.toInt())
+            }
+
+        // Cookieを送ればログイン出来る
+        var result = mvc.perform(get("/")
+            .cookie(*(loginResult.response.cookies))
+        ).andReturn()
+        var indexPage = TH.parseHtml(result.response.contentAsString, client)
+        TH.checkHeaderMenu(indexPage, true)
+
+        // Cookieを送らなければばログイン出来ない
+        result = mvc.perform(get("/")).andReturn()
+        indexPage = TH.parseHtml(result.response.contentAsString, client)
+        TH.checkHeaderMenu(indexPage, false)
+    }
+
+    @Test
+    fun `login without remembering`() {
+        // クッキーを保存してログイン
+        var result = TH.loginAs(mvc, user, true)
+        // ログアウトしたらクッキーが削除される
+        TH.logout(mvc, result.request.session as MockHttpSession)
+
+        // クッキー削除後、ログイン
+        result = TH.loginAs(mvc, user, false)
+
+        assertThat(result.response.cookies)
+            .filteredOn { it.name == rememberMe.cookieName }
+            .isEmpty()
+    }
+
+    @Test
+    fun `永続ログインした後に別ユーザーで非永続ログインした場合、永続クッキーの内容が空になりセッションクッキーになる`() {
+        // 永続ログイン
+        var result = TH.loginAs(mvc, user, true)
+        val loginCookie = result.response.cookies
+
+        assertThat(loginCookie)
+            .filteredOn { it.name == rememberMe.cookieName }
+            .isNotEmpty
+            .satisfies {
+                assertThat(it[0].maxAge).isEqualTo(
+                    Duration.ofDays(rememberMe.tokenValidityDays).seconds)
+                assertThat(it[0].value).isNotBlank()
+            }
+
+        // 別ユーザーで非永続ログイン
+        val user2 = User("test user2", "user2@example.com",
+            "password", "password")
+        us.save(user2)
+
+        result = TH.loginAs(mvc, user2, false, null, *(loginCookie))
+        result = TH.post(mvc, result.response.forwardedUrl!!, emptyMap(),
+            result.request.session as MockHttpSession, *(loginCookie))
+
+        assertThat(result.response.cookies)
+            .filteredOn { it.name == rememberMe.cookieName }
+            .isNotEmpty
+            .satisfies {
+                assertThat(it[0].maxAge).isEqualTo(-1)
+                assertThat(it[0].value).isBlank()
+            }
     }
 }

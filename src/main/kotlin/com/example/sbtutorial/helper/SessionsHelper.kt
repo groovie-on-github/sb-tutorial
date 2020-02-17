@@ -21,6 +21,7 @@ class SessionsHelper {
     val loggedIn
         get() = currentUser != null
 
+    fun isCurrentUser(email: String): Boolean  = currentUser?.username == email
 
     private fun currentUser(current: Account?): Account? {
         val ctx = SecurityContextHolder.getContext()
