@@ -1,5 +1,6 @@
 package com.example.sbtutorial.model
 
+import org.hibernate.annotations.ColumnDefault
 import java.util.*
 import javax.persistence.*
 
@@ -8,11 +9,19 @@ class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: UUID? = null
+    @Column(updatable = false)
+    final var id: UUID? = null
+        private set
 
-    var createdAt: Date? = null
+    @Column(nullable = false, updatable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    final var createdAt: Date? = null
+        private set
 
-    var updatedAt: Date? = null
+    @Column(nullable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    final var updatedAt: Date? = null
+        private set
 
 
     @PrePersist

@@ -6,12 +6,15 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.PersistenceException
 import javax.validation.ConstraintViolationException
 import javax.validation.Validation
 
 @DataJpaTest
 class UserTests(@Autowired private val em: TestEntityManager) {
+
+    private val pe: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     private lateinit var userForm: UserForm
     private lateinit var user: User
@@ -21,9 +24,8 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @BeforeEach
     fun setUp() {
-        userForm = UserForm("Example User", "user@example.com",
-            "foobar", "foobar")
-        user = userForm.populate(User())
+        userForm = UserForm("Example User", "user@example.com", "foobar", "foobar", pe)
+        user = User()
     }
 
 
@@ -32,7 +34,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         val result = validator.validate(userForm)
         assertThat(result).isEmpty()
 
-        em.persistAndFlush(user)
+        em.persistAndFlush(userForm.populate(user))
     }
 
     @Test
@@ -149,7 +151,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `email addresses should be unique`() {
-        em.persistAndFlush(user)
+        em.persistAndFlush(userForm.populate(user))
         val duplicateUser = userForm.populate(User())
         assertThatThrownBy {
             em.persistAndFlush(duplicateUser)
@@ -159,6 +161,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `email addresses should be saved as lower-case`() {
+        userForm.populate(user)
         val mixedCaseEmail = "Foo@ExAMPle.CoM"
         user.email = mixedCaseEmail
         em.persistAndFlush(user)
@@ -189,16 +192,6 @@ class UserTests(@Autowired private val em: TestEntityManager) {
     }
 
     @Test
-    fun `パスワードの長さが足りない時は登録できない`() {
-        user.password = "fooba"
-
-        assertThatThrownBy {
-            em.persistAndFlush(user)
-            fail<String>("PersistenceException expected")
-        }.isInstanceOf(PersistenceException::class.java)
-    }
-
-    @Test
     fun `パスワードと確認用パスワードは一致しなければならない`() {
         userForm.passwordConfirmation = "foobaz"
         val result = validator.validate(userForm)
@@ -216,29 +209,26 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `#toString`() {
+        userForm.populate(user)
         for(i in 1..2) {
             assertThat(user.toString()).startsWith("User(")
-                .contains(user.name, user.email).also {
-                    if (user.passwordDigest == null) {
-                        if(i == 2) fail<String>("expected 1 but 2")
-                        it.doesNotContain(user.password, user.passwordConfirmation)
-                    } else {
-                        if(i == 1) fail<String>("expected 2 but 1")
-                        it.doesNotContain(user.password, user.passwordConfirmation, user.passwordDigest)
-                    }
-                }
+                .contains(user.name, user.email)
+                .doesNotContain(user.passwordDigest)
             em.persistAndFlush(user)
         }
     }
 
     @Test
     fun `#equals and #hashcode`() {
-        val user = User("test user", "user@example.com", "foobar", "foobar")
-        assertThat(user).isEqualTo(
-            User("test user", "user@example.com", "foobar", "foobar"))
+        assertThat(userForm).isEqualTo(UserForm("Example User", "user@example.com", "foobar", "foobar", pe))
 
-        assertThat(user.hashCode()).isEqualTo(
-            User("test user", "user@example.com", "foobar", "foobar")
-                .hashCode())
+        userForm.populate(user)
+        // パスワードダイジェストはpopulateするたびに変わるので一致しない
+        assertThat(user).isNotEqualTo(userForm.populate(User()))
+        assertThat(user.hashCode()).isNotEqualTo(userForm.populate(User()).hashCode())
+
+        val user2 = User("user2", "user2@example.com")
+        assertThat(user2).isEqualTo(User("user2", "user2@example.com"))
+        assertThat(user2.hashCode()).isEqualTo(User("user2", "user2@example.com").hashCode())
     }
 }

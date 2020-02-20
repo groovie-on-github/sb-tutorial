@@ -1,4 +1,4 @@
-<header class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
+<header id="layoutsHeader" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
   <div class="container" th:with="loggedIn = ${@sessionsHelper.loggedIn}">
     <a id="logo" class="" href="#" th:href="@{/}" th:text="#{view.layouts.header.logo}">sample app</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,7 +13,9 @@
           <a class="nav-link" href="#" th:href="@{/help}" th:text="#{view.layouts.header.help}">Help</a>
         </li>
         <th:block th:if="${loggedIn}">
-        <li class="nav-item"><a class="nav-link" href="#" th:text="#{view.layouts.header.users}">Users</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/users}" th:text="#{view.layouts.header.users}">Users</a>
+        </li>
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" id="navbarDropdownMenuLink">
             [[#{view.layouts.header.account}]]
@@ -21,7 +23,8 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="#" th:href="@{/users/{userId}(userId = ${@sessionsHelper.currentId})}"
                th:text="#{view.layouts.header.profile}">Profile</a>
-            <a class="dropdown-item" href="#" th:href="@{#}" th:text="#{view.layouts.header.settings}">Settings</a>
+            <a class="dropdown-item" href="#" th:href="@{/users/{userId}/edit(userId = ${@sessionsHelper.currentId})}"
+               th:text="#{view.layouts.header.settings}">Settings</a>
             <div class="dropdown-divider"></div>
             <form action="#" th:action="@{/logout}" method="post">
               <input class="btn btn-link dropdown-item m-0" type="submit" value="Log out"

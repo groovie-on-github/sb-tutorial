@@ -1,0 +1,29 @@
+<form action="#" th:action="@{__${action}__}" method="post" th:object="${userForm}" th:fragment="form(action, buttonText)">
+  <th:block th:replace="shared/_error_messages"></th:block>
+
+  <div class="form-group">
+    <label for="name" th:text="#{userForm.name}">Name:</label>
+    <input id="name" class="form-control" type="text" th:field="*{name}" value="user.name"
+           th:errorclass="field_with_errors">
+  </div>
+
+  <div class="form-group">
+    <label for="email" th:text="#{userForm.email}">Email:</label>
+    <input id="email" class="form-control" type="email" th:field="*{email}" value="user.email"
+           th:errorclass="field_with_errors">
+  </div>
+
+  <div class="form-group">
+    <label for="password" th:text="#{userForm.password}">Password:</label>
+    <input id="password" class="form-control" type="password" th:field="*{password}" value="user.password"
+           th:errorclass="field_with_errors">
+  </div>
+
+  <div class="form-group">
+    <label for="passwordConfirmation" th:text="#{userForm.passwordConfirmation}">Confirmation:</label>
+    <input id="passwordConfirmation" class="form-control" type="password" th:field="*{passwordConfirmation}"
+           value="user.passwordConfirmation" th:errorclass="field_with_errors">
+  </div>
+
+  <input class="btn btn-success" type="submit" value="Submit Button" th:value="${buttonText}">
+</form>

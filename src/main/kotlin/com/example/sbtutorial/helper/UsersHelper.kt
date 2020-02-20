@@ -6,17 +6,17 @@ import org.springframework.util.DigestUtils
 @Service
 object UsersHelper {
 
-    private const val GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s?s=%s%s"
+    private const val GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s(%s)"
 
     private val DEFAULT_IMAGES = listOf("mp", "identicon", "monsterid", "wavatar", "retro", "robohash")
 
-    fun gravatarFor(email: String, options: Map<String, Any>?): String {
-        val size = options?.get("size") ?: 80
-        val default = when(val num = (0..DEFAULT_IMAGES.size).random()) {
-            DEFAULT_IMAGES.size -> ""
-            else -> "&d=" + DEFAULT_IMAGES[num]
+    fun gravatarFor(email: String, gravatarOpts: Map<String, Any>?): String {
+        var options = "s='%d'".format(gravatarOpts?.get("size") ?: 80)
+        options = when(val num = (0..DEFAULT_IMAGES.size).random()) {
+            DEFAULT_IMAGES.size -> options
+            else -> "$options, d='${DEFAULT_IMAGES[num]}'"
         }
 
-        return GRAVATAR_URL.format(DigestUtils.md5DigestAsHex(email.toByteArray()), size, default)
+        return GRAVATAR_URL.format(DigestUtils.md5DigestAsHex(email.toByteArray()), options)
     }
 }

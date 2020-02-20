@@ -3,9 +3,10 @@
 /* mixins, variables, etc. */
 
 $gray-medium-light: #eaeaea;
+$gray-darker: color("gray-dark");/* gray("800") */
 $gray: color("gray");/* gray("600") */
 $gray-light: gray("500");
-$gray-darker: color("gray-dark");/* gray("800") */
+$gray-lighter: gray("400");
 
 @mixin box_sizing {
   -moz-box-sizing:    border-box;
@@ -208,4 +209,24 @@ input {
 #session_remember_me {
   width: auto;
 /*  margin-left: 0;*/
+}
+
+
+/* Users index */
+
+.users {
+  list-style: none;
+  margin: 0;
+  li {
+    overflow: auto;
+    padding: 10px 0;
+    border-bottom: 1px solid $gray-lighter;
+  }
+}
+
+
+/* Pagination */
+.pagination-fragment {
+  margin-top: 50px;
+  margin-bottom: 50px;
 }

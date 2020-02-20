@@ -1,0 +1,2 @@
+<img class="gravatar" src="#" th:src="@{__${@usersHelper.gravatarFor(email, gravatarOpts)}__}"
+     alt="user.name" th:alt="*{name}" th:with="email = *{email}">

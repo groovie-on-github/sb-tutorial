@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Edit user</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1 th:text="#{view.users.edit.heading}">Update your profile</h1>
+
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form th:replace="users/_form('/users/{id}(id = *{id})', #{view.users.edit.submit})"></form>
+
+      <div class="gravatar_edit" th:object="${userForm}">
+        <img th:replace="shared/_gravatar">
+        <a href="http://gravatar.com/emails" target="_blank" rel="noopener" th:text="#{view.users.edit.gravatar}">change</a>
+      </div>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<div class="debug_dump border p-3 rounded bg-light">
+<div class="debug_dump border p-3 rounded bg-light" th:if="${@environment.getProperty('view.debug')}">
   <h2>Debug Mode</h2>
   <div th:unless="${#maps.isEmpty(param)}">
     <p>Params:</p>
@@ -10,6 +10,17 @@
       </th:block>
     </th:block>
   </div>
+  <th:block th:if="${#session != null}">
+  <br>
+  <div>
+    <p>Session:</p>
+    <th:block th:each="an,statAn : ${#session.attributeNames}">
+      [[|${an}=${#session.getAttribute(an)}|]]
+      <th:block th:if="${statAn.first}"><br></th:block>
+      <th:block th:unless="${statAn.last}"><br></th:block>
+    </th:block>
+  </div>
+  </th:block>
   <br>
   <div>
     <p>Cookies:</p>

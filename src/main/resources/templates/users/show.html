@@ -9,8 +9,7 @@
     <aside class="col-md-4">
       <section class="user_info" th:object="${userForm}">
         <h1>
-          <img class="gravatar" src="#" th:src="${@usersHelper.gravatarFor(userForm.email, gravatarOpts)}"
-               alt="user.name" th:alt="${userForm.name}">
+          <img th:replace="shared/_gravatar">
           [[*{name}]]
         </h1>
       </section>

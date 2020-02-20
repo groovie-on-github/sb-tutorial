@@ -1,8 +1,7 @@
 package com.example.sbtutorial.model.user
 
 import com.example.sbtutorial.model.BaseEntity
-import com.example.sbtutorial.model.IHavePassword
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.hibernate.annotations.ColumnDefault
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -11,8 +10,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "\"user\"")
-class User(name: String = "", email: String = "",
-           password: String = "", passwordConfirm: String = ""): BaseEntity(), IHavePassword {
+class User(name: String = "", email: String = ""): BaseEntity() {
 
     companion object {
         const val NAME_LENGTH_MAX = 50
@@ -25,7 +23,6 @@ class User(name: String = "", email: String = "",
     @Size(max = NAME_LENGTH_MAX, message = "{user.name.Size}")
     @Column(nullable = false, length = NAME_LENGTH_MAX)
     var name: String = name
-        set(value) { field = value.trim() }
 
     @NotBlank(message = "{user.email.NotBlank}")
     @Size(max = EMAIL_LENGTH_MAX, message = "{user.email.Size}")
@@ -33,26 +30,20 @@ class User(name: String = "", email: String = "",
            message = "{user.email.Email}")
     @Column(nullable = false, length = EMAIL_LENGTH_MAX, unique = true)
     var email: String = email
-        set(value) { field = value.trim() }
-
-    @Transient
-    override var password: String = password
-        set(value) { field = value.trim() }
-
-    @Transient
-    override var passwordConfirmation: String = passwordConfirm
 
     @Column(nullable = false)
     var passwordDigest: String? = null
 
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    final var isAdmin: Boolean = false
+        private set
 
-    @PrePersist @PreUpdate
+
+    @PrePersist
+    @PreUpdate
     private fun OnPrePersistOrUpdate() {
         email = email.toLowerCase()
-
-        if(password.length >= PASSWORD_LENGTH_MIN && password == passwordConfirmation) {
-            passwordDigest = BCryptPasswordEncoder().encode(password)
-        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -62,9 +53,8 @@ class User(name: String = "", email: String = "",
 
         if (name != other.name) return false
         if (email != other.email) return false
-        if (password != other.password) return false
-        if (passwordConfirmation != other.passwordConfirmation) return false
         if (passwordDigest != other.passwordDigest) return false
+        if (isAdmin != other.isAdmin) return false
 
         return true
     }
@@ -73,14 +63,13 @@ class User(name: String = "", email: String = "",
         var result = super.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + email.hashCode()
-        result = 31 * result + password.hashCode()
-        result = 31 * result + passwordConfirmation.hashCode()
         result = 31 * result + (passwordDigest?.hashCode() ?: 0)
+        result = 31 * result + isAdmin.hashCode()
         return result
     }
 
     override fun toString(): String {
         return super.toString().format("User",
-            "name='$name', email='$email', password='[PROTECTED]', passwordConfirmation='[PROTECTED]', passwordDigest='[PROTECTED]'")
+            "name='$name', email='$email', passwordDigest='[PROTECTED]', isAdmin='[PROTECTED]'")
     }
 }

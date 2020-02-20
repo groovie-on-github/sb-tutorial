@@ -17,26 +17,40 @@ import javax.servlet.http.Cookie
 
 object TestHelper {
 
-    fun parseHtml(html: String, client: WebClient): HtmlPage {
+    fun parseHtml(result: MvcResult, client: WebClient): HtmlPage {
+        return parseHtml(result.response.contentAsString, client)
+    }
 
+    fun parseHtml(html: String, client: WebClient): HtmlPage {
         return client.pageCreator.htmlParser.parseHtml(StringWebResponse(html,
             URL("http://localhost")), client.currentWindow)
     }
 
     fun checkHeaderMenu(page: HtmlPage, loggedIn: Boolean, id: UUID? = null) {
-        assertThat(page.getByXPath<HtmlElement>("//a[@href='/login']"))
+        val header = page.body.getByXPath<HtmlElement>("header[@id='layoutsHeader']").first()
+        assertThat(header.getByXPath<HtmlElement>("//a[@href='/login']"))
             .hasSize(if(loggedIn) 0 else 1)
-        assertThat(page.getByXPath<HtmlElement>("//form[@action='/logout' and @method='post']"))
+        assertThat(header.getByXPath<HtmlElement>("//form[@action='/logout' and @method='post']"))
             .hasSize(if(loggedIn) 1 else 0)
-        assertThat(page.getByXPath<HtmlElement>("//a[starts-with(@href, '/users/${id ?: ""}')]"))
+        assertThat(header.getByXPath<HtmlElement>("//a[@href='/users']"))
+            .hasSize(if(loggedIn) 1 else 0)
+        assertThat(header.getByXPath<HtmlElement>("//a[@href='/users/${id}']"))
+            .hasSize(if(loggedIn) 1 else 0)
+        assertThat(header.getByXPath<HtmlElement>("//a[@href='/users/${id}/edit']"))
             .hasSize(if(loggedIn) 1 else 0)
     }
 
-    fun get(mvc: MockMvc, path: String, params: Map<String, String>,
+    fun get(mvc: MockMvc, path: String, session: MockHttpSession? = null,
+            params: Map<String, String>? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
+
+        return get(mvc, path, params, session, *cookies)
+    }
+
+    fun get(mvc: MockMvc, path: String, params: Map<String, String>?,
                 session: MockHttpSession? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
         return mvc.perform(get(path)
             .apply {
-                params.forEach { (k, v) ->
+                params?.forEach { (k, v) ->
                     param(k, v)
                 }
             }
@@ -45,11 +59,16 @@ object TestHelper {
         ).andReturn()
     }
 
-    fun post(mvc: MockMvc, path: String, params: Map<String, String>,
+    fun post(mvc: MockMvc, path: String, session: MockHttpSession? = null,
+             params: Map<String, String>? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
+        return post(mvc, path, params, session, *cookies)
+    }
+
+    fun post(mvc: MockMvc, path: String, params: Map<String, String>?,
             session: MockHttpSession? = null, vararg cookies: Cookie = emptyArray()): MvcResult {
         return mvc.perform(post(path)
             .apply {
-                params.forEach { (k, v) ->
+                params?.forEach { (k, v) ->
                     param(k, v)
                 }
             }

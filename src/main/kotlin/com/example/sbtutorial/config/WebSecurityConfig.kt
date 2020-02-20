@@ -5,6 +5,7 @@ import com.example.sbtutorial.auth.AuthProperties
 import org.apache.commons.logging.LogFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -21,7 +22,7 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
     private val log = LogFactory.getLog(WebSecurityConfig::class.java)
 
     override fun configure(http: HttpSecurity) {
-        log.debug("#configure called!!")
+        log.debug("#configure(HttpSecurity) called!!")
         log.debug(">> $authProperties")
         val rememberMe = authProperties.rememberMe
 
@@ -29,10 +30,18 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
             // 認証が必要なリクエストを設定する
             // 順番は大事！！
             .authorizeRequests()
+                // ユーザーリソースに関するアクセスを制限する
+                // ユーザー情報表示以外は本人のみ
+                // ユーザー削除はROLE_ADMINのみ許可
+                .mvcMatchers(HttpMethod.GET, "/users").authenticated()
+                .mvcMatchers(HttpMethod.GET, "/users/{id}").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/users/{id}/*").access("isAuthenticated() and principal.id.toString() == #id")
+                .mvcMatchers(HttpMethod.POST, "/users/{id}").access("isAuthenticated() and principal.id.toString() == #id")
+                .mvcMatchers(HttpMethod.POST, "/users/{id}/delete").access("isAuthenticated() and hasRole('ADMIN')")
+
                 // ルート直下のアクセスは許可する
                 .mvcMatchers("/*").permitAll()
-                // ドメインリソースへのアクセスは許可する
-                .mvcMatchers("/users/**").permitAll()
+
                 // 静的リソースへのアクセスは許可する
                 .mvcMatchers("/webjars/**", "/css/**", "/images/**").permitAll()
 
@@ -61,14 +70,28 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
             .logout()
                 .logoutSuccessUrl("/logout-success")
                 .permitAll()
+
+            .and()
+
+            .exceptionHandling()
+                .accessDeniedPage("/error/access-denied")
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(accountService).passwordEncoder(BCryptPasswordEncoder())
+        log.debug("#configure(AuthenticationManagerBuilder) called!!")
+        val passwordEncoder = passwordEncoder()
+        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder)
+
+        val admin = authProperties.admin
+        log.debug(">> $admin")
+        accountService.registerAdmin(admin, passwordEncoder)
     }
 
     @Bean
     override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
     }
+
+    @Bean
+    fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 }

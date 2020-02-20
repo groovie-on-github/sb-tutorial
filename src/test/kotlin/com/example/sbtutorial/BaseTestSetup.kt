@@ -4,9 +4,11 @@ import com.example.sbtutorial.auth.AccountService
 import com.example.sbtutorial.model.user.UsersService
 import com.gargoylesoftware.htmlunit.WebClient
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,10 +18,13 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureDataJpa
 @Transactional
 @Sql("/data.sql")
-abstract class BaseTestSetup(private val client: WebClient) {
+abstract class BaseTestSetup(private val client: WebClient?) {
+
+    @Autowired
+    lateinit var pe: BCryptPasswordEncoder
 
     @BeforeEach
     fun setUp() {
-        client.addRequestHeader("Accept-Language", "en")
+        client?.addRequestHeader("Accept-Language", "en")
     }
 }

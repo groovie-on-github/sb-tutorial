@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>All users</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <h1 th:text="#{view.users.index.heading}">All users</h1>
+
+  <th:block th:replace="users/_pagination(${users})"></th:block>
+
+  <ul class="users">
+    <li th:each="user : ${users.content}" th:object="${user}">
+      <img th:replace="shared/_gravatar">
+      <a href="#" th:href="@{/users/{id}(id = *{id})}" th:text="*{name}">user.name</a>
+      <th:block th:if="${@sessionsHelper.admin && !@sessionsHelper.isCurrentUser(user.email)}">
+       | <button class="btn btn-link border-0 p-0 del-btn" form="deleteForm" formaction="#"
+                 th:formaction="@{/users/{id}/delete(id = *{id})}" th:text="#{view.users.index.delete}">delete</button>
+      </th:block>
+    </li>
+  </ul>
+
+  <th:block th:replace="users/_pagination(${users})"></th:block>
+
+  <form id="deleteForm" action="#" th:action="@{#}" method="post"></form>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      $("button.del-btn").click(function(event) {
+        return confirm('[[#{view.users.index.delete.confirm}]]');
+      });
+    });
+  </script>
+
+</th:block>
+</body>
+</html>

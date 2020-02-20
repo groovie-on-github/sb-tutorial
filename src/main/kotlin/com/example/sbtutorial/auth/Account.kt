@@ -10,6 +10,9 @@ class Account(private val user: User,
     val id
         get() = user.id
 
+    val isAdmin
+        get() = user.isAdmin
+
     override fun getUsername() = user.email
 
     override fun getPassword() = user.passwordDigest

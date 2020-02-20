@@ -5,8 +5,10 @@ import com.example.sbtutorial.auth.AuthProperties
 import com.example.sbtutorial.controller.SessionsController
 import com.example.sbtutorial.controller.StaticPagesController
 import com.example.sbtutorial.controller.UsersController
+import com.example.sbtutorial.mockSession
 import com.example.sbtutorial.helper.TestHelper as TH
 import com.example.sbtutorial.model.user.User
+import com.example.sbtutorial.model.user.UserForm
 import com.example.sbtutorial.model.user.UsersService
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlElement
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.mock.web.MockHttpSession
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -35,7 +36,7 @@ class UsersLoginTests @Autowired constructor(
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        user = us.findByEmail("example@railstutorial.org")!!
+        user = us.findByEmail("michael@example.com")!!
     }
 
     @Test
@@ -43,12 +44,12 @@ class UsersLoginTests @Autowired constructor(
         // ログイン画面表示
         var result = mvc.perform(get("/login"))
             .andExpect(status().isOk)
-            .andExpect(view().name("/sessions/new"))
+            .andExpect(view().name("sessions/new"))
             .andExpect(model().attribute("title_key",
                 `is`("view.sessions.new.title")))
             .andReturn()
 
-        var sessionsNewPage = TH.parseHtml(result.response.contentAsString, client)
+        var sessionsNewPage = TH.parseHtml(result, client)
         // ログインフォームの存在チェック
         assertThat(sessionsNewPage.getByXPath<HtmlElement>("//form[@action='/login' and @method='post']"))
             .hasSize(1)
@@ -67,7 +68,7 @@ class UsersLoginTests @Autowired constructor(
             .andExpect(forwardedUrl("/login-error"))
             .andReturn()
         result = mvc.perform(post(result.response.forwardedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
             .with(SecurityMockMvcRequestPostProcessors.csrf())
         )
             .andExpect(status().is3xxRedirection)
@@ -78,16 +79,16 @@ class UsersLoginTests @Autowired constructor(
 
         // エラーハンドラで"/login"にリダイレクトされる
         result = mvc.perform(get(result.response.redirectedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
             .flashAttrs(result.flashMap)
         )
             .andExpect(status().isOk)
-            .andExpect(view().name("/sessions/new"))
+            .andExpect(view().name("sessions/new"))
             .andExpect(model().attribute("title_key",
                 `is`("view.sessions.new.title")))
             .andReturn()
 
-        sessionsNewPage = TH.parseHtml(result.response.contentAsString, client)
+        sessionsNewPage = TH.parseHtml(result, client)
         // フラッシュメッセージのチェック
         assertThat(sessionsNewPage.getByXPath<HtmlElement>(
             "/html/body/div/div[@class='alert alert-danger']")
@@ -102,7 +103,7 @@ class UsersLoginTests @Autowired constructor(
             .andExpect(model().attributeDoesNotExist("flash"))
             .andReturn()
 
-        val indexPage = TH.parseHtml(result.response.contentAsString, client)
+        val indexPage = TH.parseHtml(result, client)
         // フラッシュメッセージのチェック
         assertThat(indexPage.getByXPath<HtmlElement>(
             "/html/body/div/div[contains(@class, 'alert alert-')]")
@@ -116,12 +117,12 @@ class UsersLoginTests @Autowired constructor(
         // ログイン画面表示
         var result = mvc.perform(get("/login"))
             .andExpect(status().isOk)
-            .andExpect(view().name("/sessions/new"))
+            .andExpect(view().name("sessions/new"))
             .andExpect(model().attribute("title_key",
                 `is`("view.sessions.new.title")))
             .andReturn()
 
-        val sessionsNewPage = TH.parseHtml(result.response.contentAsString, client)
+        val sessionsNewPage = TH.parseHtml(result, client)
         // ログインフォームの存在チェック
         assertThat(sessionsNewPage.getByXPath<HtmlElement>("//form[@action='/login' and @method='post']"))
             .hasSize(1)
@@ -140,7 +141,7 @@ class UsersLoginTests @Autowired constructor(
             .andExpect(forwardedUrl("/login-success"))
             .andReturn()
         result = mvc.perform(post(result.response.forwardedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
             .with(SecurityMockMvcRequestPostProcessors.csrf())
         )
             .andExpect(status().is3xxRedirection)
@@ -149,12 +150,12 @@ class UsersLoginTests @Autowired constructor(
 
         // 成功時ハンドラでユーザー表示画面にリダイレクトされる
         result = mvc.perform(get(result.response.redirectedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
         )
             .andExpect(status().isOk)
             .andReturn()
 
-        val usersShowPage = TH.parseHtml(result.response.contentAsString, client)
+        val usersShowPage = TH.parseHtml(result, client)
         // ヘッダーメニューのリンクチェック
         TH.checkHeaderMenu(usersShowPage, true, user.id)
 
@@ -162,14 +163,14 @@ class UsersLoginTests @Autowired constructor(
         // ログアウト成功時は"/logout-success"にリダイレクトされる
         // WebSecurityConfigクラスで明示的に設定している
         result = mvc.perform(post("/logout")
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
             .with(SecurityMockMvcRequestPostProcessors.csrf())
         )
             .andExpect(status().is3xxRedirection)
             .andExpect(redirectedUrl("/logout-success"))
             .andReturn()
         result = mvc.perform(get(result.response.redirectedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
         )
             .andExpect(status().is3xxRedirection)
             .andExpect(redirectedUrl("/"))
@@ -177,12 +178,12 @@ class UsersLoginTests @Autowired constructor(
 
         // 成功時ハンドラでルートにリダイレクトされる
         result = mvc.perform(get(result.response.redirectedUrl!!)
-            .session(result.request.session as MockHttpSession)
+            .session(result.request.mockSession)
         )
             .andExpect(status().isOk)
             .andReturn()
 
-        val indexPage = TH.parseHtml(result.response.contentAsString, client)
+        val indexPage = TH.parseHtml(result, client)
         // ヘッダーメニューのリンクチェック
         TH.checkHeaderMenu(indexPage, false)
     }
@@ -205,12 +206,12 @@ class UsersLoginTests @Autowired constructor(
         var result = mvc.perform(get("/")
             .cookie(*(loginResult.response.cookies))
         ).andReturn()
-        var indexPage = TH.parseHtml(result.response.contentAsString, client)
-        TH.checkHeaderMenu(indexPage, true)
+        var indexPage = TH.parseHtml(result, client)
+        TH.checkHeaderMenu(indexPage, true, user.id)
 
         // Cookieを送らなければばログイン出来ない
         result = mvc.perform(get("/")).andReturn()
-        indexPage = TH.parseHtml(result.response.contentAsString, client)
+        indexPage = TH.parseHtml(result, client)
         TH.checkHeaderMenu(indexPage, false)
     }
 
@@ -219,7 +220,7 @@ class UsersLoginTests @Autowired constructor(
         // クッキーを保存してログイン
         var result = TH.loginAs(mvc, user, true)
         // ログアウトしたらクッキーが削除される
-        TH.logout(mvc, result.request.session as MockHttpSession)
+        TH.logout(mvc, result.request.mockSession)
 
         // クッキー削除後、ログイン
         result = TH.loginAs(mvc, user, false)
@@ -245,13 +246,13 @@ class UsersLoginTests @Autowired constructor(
             }
 
         // 別ユーザーで非永続ログイン
-        val user2 = User("test user2", "user2@example.com",
-            "password", "password")
+        val user2 = UserForm("test user2", "user2@example.com",
+            "password", "password", pe).populate(User())
         us.save(user2)
 
         result = TH.loginAs(mvc, user2, false, null, *(loginCookie))
         result = TH.post(mvc, result.response.forwardedUrl!!, emptyMap(),
-            result.request.session as MockHttpSession, *(loginCookie))
+                         result.request.mockSession, *(loginCookie))
 
         assertThat(result.response.cookies)
             .filteredOn { it.name == rememberMe.cookieName }

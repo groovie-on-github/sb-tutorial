@@ -1,0 +1,84 @@
+<nav class="pagination-fragment" th:if="${page.totalPages > 0 && page.number < page.totalPages}"
+     th:fragment="pagination(page)">
+  <ul class="pagination">
+<!--/*ページの範囲を固定するパターン*/-->
+    <th:block th:with="max = ${paginationMax ?: 10},
+                       totalPages = ${page.totalPages},
+                       lastIndex = ${totalPages - 1},
+                       current = ${page.number},
+                       start = ${(current / max) * max},
+                       end = ${(start + max) > (totalPages) ? (totalPages) : (start + max)},
+                       pageSize = ${param.size}">
+<!--/**/-->
+<!--/*currentを先頭としてページ範囲を作るパターン
+    <th:block th:with="max = ${paginationMax ?: 10},
+                       lastIndex = ${totalPages - 1},
+                       current = ${page.number},
+                       end = ${(current + max) > (totalPages) ? (totalPages) : (current + max)},
+                       start = ${end - max},
+                       pageSize = ${param.size}">
+*/-->
+<!--/*paginationBack-1 遷移後のcurrentがページの先頭になるパターン*/-->
+    <li id="paginationBack" class="page-item" th:classappend="${isFirstPage} ? 'disabled'"
+        th:with="isFirstPage = ${current < max}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${(start - max) < 0 ? 0 : (start - max)}
+                  __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isFirstPage}">&larr;</a>
+      <span class="page-link" th:if="${isFirstPage}">&larr;</span>
+    </li>
+<!--/**/-->
+<!--/*paginationBack-2 遷移後のcurrentが遷移前の位置と同じになるパターン
+    <li id="paginationBack" class="page-item" th:classappend="${isFirstPage} ? 'disabled'"
+        th:with="isFirstPage = ${current < max}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${(current - max) < 0 ? 0 : (current - max)}
+                  __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isFirstPage}">&larr;</a>
+      <span class="page-link" th:if="${isFirstPage}">&larr;</span>
+    </li>
+*/-->
+    <li id="paginationPrev" class="page-item" th:classappend="${isFirst} ? 'disabled'"
+        th:with="isFirst = ${page.first}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${current - 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isFirst}">&laquo;</a>
+      <span class="page-link" th:if="${isFirst}">&laquo;</span>
+    </li>
+    <li class="page-item" th:each="i : ${#numbers.sequence(start, end - 1)}"
+        th:classappend="${isCurrent} ? 'active'" th:with="isCurrent = ${i == current}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${i} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:text="${i + 1}" th:unless="${isCurrent}">page number</a>
+      <span class="page-link" th:text="${i + 1}" th:if="${isCurrent}">page number</span>
+    </li>
+    <li id="paginationNext" class="page-item" th:classappend="${isLast} ? 'disabled'"
+        th:with="isLast = ${page.last}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${current + 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isLast}">&raquo;</a>
+      <span class="page-link" th:if="${isLast}">&raquo;</span>
+    </li>
+<!--/*paginationForward-2 遷移後のcurrentがページの先頭になるパターン*/-->
+    <li id="paginationForward" class="page-item" th:classappend="${isLastPage} ? 'disabled'"
+        th:with="isLastPage = ${end >= totalPages}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${(start + max) > lastIndex ? lastIndex : (start + max)}
+                  __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isLastPage}">&rarr;</a>
+      <span class="page-link" th:if="${isLastPage}">&rarr;</span>
+    </li>
+<!--/**/-->
+<!--/*paginationForward-2 遷移後のcurrentが遷移前の位置と同じになるパターン
+    <li id="paginationForward" class="page-item" th:classappend="${isLastPage} ? 'disabled'"
+        th:with="isLastPage = ${current > (lastIndex - max)}">
+      <a class="page-link" href="#"
+         th:href="@{/users(page=${(current + max) > lastIndex ? lastIndex : (current + max)}
+                  __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:unless="${isLastPage}">&rarr;</a>
+      <span class="page-link" th:if="${isLastPage}">&rarr;</span>
+    </li>
+*/-->
+    </th:block>
+  </ul>
+</nav>
