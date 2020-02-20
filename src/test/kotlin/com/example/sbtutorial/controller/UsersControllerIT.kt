@@ -6,8 +6,8 @@ import com.example.sbtutorial.model.user.User
 import com.example.sbtutorial.model.user.UsersService
 import com.example.sbtutorial.toURL
 import com.gargoylesoftware.htmlunit.WebClient
+import com.gargoylesoftware.htmlunit.html.HtmlElement
 import com.gargoylesoftware.htmlunit.html.HtmlPage
-import com.ninjasquad.springmockk.clear
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.web.servlet.MockMvc
-import java.net.URL
 import com.example.sbtutorial.helper.TestHelper as TH
 
 @WebMvcTest(UsersController::class, ErrorHandleController::class)
@@ -91,5 +90,25 @@ class UsersControllerIT @Autowired constructor(
         assertThat(result.response.redirectedUrl).isEqualTo("/")
 
         assertThat(us.findAll().size).isEqualTo(before)
+    }
+
+    @Test
+    fun `アクティベートされていないユーザーは一覧に表示されない`() {
+        val notActivated = us.findAll().first { !it.isActivated }
+        var result = TH.loginAs(mvc, user, false)
+        result = TH.get(mvc, "/users", result.mockSession)
+        val ulUsers = TH.parseHtml(result, client).getByXPath<HtmlElement>("//ul[@class='users']")
+        assertThat(ulUsers).isNotEmpty.hasSize(1)
+        assertThat(ulUsers[0].getByXPath<HtmlElement>(".//a")).allSatisfy {
+            assertThat(it.textContent).isNotEqualTo(notActivated.name)
+        }
+    }
+
+    @Test
+    fun `アクティベートされていないユーザー情報は表示されない - ルートにリダイレクトされる`() {
+        val notActivated = us.findAll().first { !it.isActivated }
+        val result = TH.get(mvc, "/users/${notActivated.id}")
+        assertThat(result.response.status).isEqualTo(HttpStatus.FOUND.value())
+        assertThat(result.response.redirectedUrl).isEqualTo("/")
     }
 }

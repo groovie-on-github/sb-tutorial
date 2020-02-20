@@ -1,404 +1,407 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-INSERT INTO "user"(id, name, email, password_digest)
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
   SELECT uuid_generate_v1(), 'Rails Tutorial', 'example@railstutorial.org',
-    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O'
-  WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example@railstutorial.org');
+    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O',
+    true, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example@railstutorial.org');
 
 
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Edmundo Predovic', 'example-1@railstutorial.org',
-    '$2a$10$rgnbEiLKP9y.QChs1h.NHOjpVRcPRghM56GCmIeTwwBv/o8Zx6hX2'
+/*generated dummy users*/
+
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Talisha Gottlieb II', 'example-1@railstutorial.org',
+    '$2a$10$v6LKcZ581izyZte6Xq125u7vz5g0FOr5cDdIvNrhKIfa0L6nBX7aG', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-1@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Carmelina Vandervort', 'example-2@railstutorial.org',
-    '$2a$10$8uVA2s3PR887WNCoaA6BZ.PSkhHEFVQNsm964YcZqKpXsS7/NxXZi'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Jed Nikolaus', 'example-2@railstutorial.org',
+    '$2a$10$qmnL/qYKMVIxHXocqDfXTe12FrZmu3haDCeZIFttWJVgPMKhBU/KC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-2@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Brice Wehner', 'example-3@railstutorial.org',
-    '$2a$10$ofblZvhyc6a4yRP7J38oQOCABDlDoQ4Gbz0Ouod5dN3e0Cm5vISaS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Willia Williamson', 'example-3@railstutorial.org',
+    '$2a$10$XrhFB1dsHB5m687ubhc04.mNRkQO9bfFel1/aoR6q.K.Nnqjj6bLa', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-3@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dana Baumbach', 'example-4@railstutorial.org',
-    '$2a$10$leCf1qaBrQ/1sMal5fr.JuE9JQeGRtFgAWlKwWEik42zgLM3PPdOm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Shayne Pouros', 'example-4@railstutorial.org',
+    '$2a$10$JmWG5DT7Y8BdLVxk8BRPGOw8OTbAEtgHXQAN3IfuXJ887vm09NgyC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-4@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Tomasa Rohan', 'example-5@railstutorial.org',
-    '$2a$10$2iF3MZTwE0IezS/xaPH.vu8OLWJ3yP7LTnJeEbjYW/zMEh7e7DJ7W'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Karl Dickinson', 'example-5@railstutorial.org',
+    '$2a$10$rr54gTwWaddLj.2vc7frgOQQlkyWu7TAAEyXR4BP1qjBzz7vGe6RW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-5@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Lauri Smitham III', 'example-6@railstutorial.org',
-    '$2a$10$ls4YnecveqKp57V8V5a4d.qpid/iNLwuOEQxXLhexpv4sFGtwZot.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Wilfredo Kunze', 'example-6@railstutorial.org',
+    '$2a$10$F5FTRiqbnZO3LxUO6zHXj.c2oWzvrOPK6A3zFvNoN0JAXDQYDgChm', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-6@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Carson Kulas Jr.', 'example-7@railstutorial.org',
-    '$2a$10$9QatQB4n0LZ0Iz7qS.5W7OQJgVCnXgR/DomrGSGlrD0P0Nl71YnkW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Merle Price', 'example-7@railstutorial.org',
+    '$2a$10$lDHsZu9QwMc0kpAJK.MID.s9wP7P5wInW0Qky3uGHZc3Kn3obRvdC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-7@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Shaquita Sporer', 'example-8@railstutorial.org',
-    '$2a$10$KW1NdRh7tl16Gf4FMpypdOO5JzOBSkvO4oR2SJFMYct7wZLx6SCTW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Theodore Glover', 'example-8@railstutorial.org',
+    '$2a$10$nPNY6uiuNkppELkTyIK.d.Eow8j2CWn083ec0eLCd9IZON0xbYY0a', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-8@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mr. Lawerence Gorczany', 'example-9@railstutorial.org',
-    '$2a$10$aGXRZwllhD2F5XsdbK4M4eabodD6osNuiEPsiDh2k6qdYy6sq2516'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Demarcus Feeney', 'example-9@railstutorial.org',
+    '$2a$10$6RJ5JBubJVsRn0idIKp00.CsWunyzpikJzfTNwh3n2h5jpswMmiM2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-9@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Estrella Heaney', 'example-10@railstutorial.org',
-    '$2a$10$eP2AL0CwLITfS2YrPKf77.nEmALta0l4MPzvVgzmXBLgnr.zL/pa6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Juanita Swaniawski', 'example-10@railstutorial.org',
+    '$2a$10$yEEYj6.tGUu2pz4Beo7kDebI.TCp6P70Se79mQlsS3kjRsscDYXuW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-10@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Tyson Marquardt I', 'example-11@railstutorial.org',
-    '$2a$10$vw6.G9c.r4/QYUyvn9rYCexcxUk1yzPiIru6ABK5.sRYOdaa/d0yG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Lester Blanda', 'example-11@railstutorial.org',
+    '$2a$10$jeBSW2FhIwoBCk2L8/7j..QWw63TYaVadn5MufDMMAKTdPHz7z/q2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-11@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Moses Stehr', 'example-12@railstutorial.org',
-    '$2a$10$25ZEVv2.lYaN5ObVNbKd/u0YL76NCjWMx.FdI4LFr6QLEWLWgtHHG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Carla Lebsack', 'example-12@railstutorial.org',
+    '$2a$10$i2HeZxkrD1OAqN0zHTFLIerLa71O3eaAHMmT5bHYEbsMVesGdzy8W', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-12@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Tom Grimes III', 'example-13@railstutorial.org',
-    '$2a$10$GWngGApuNnov7KHFjPVUk.cD/Yy99FFnBBnEr26yWdbO2PPpbuEKu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mr. Roxy Pouros', 'example-13@railstutorial.org',
+    '$2a$10$0uFlyjIb9cAv0hPuKWpgeevYps89QXvKwLMnGhUWcvgw5baECbkrq', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-13@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Honey Boyer', 'example-14@railstutorial.org',
-    '$2a$10$5xHDJz8M1T4z2IyQ0bcjF.XFzIeQwG4UcmZ99idgA1CQA2ycJuXNG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Marshall Huel', 'example-14@railstutorial.org',
+    '$2a$10$ORc9vn9s/Oq.qci.UoO4Zeuq3AyvJ3tZigwll6h7WuoSBn.hF9muC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-14@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mr. Deloris Senger', 'example-15@railstutorial.org',
-    '$2a$10$CNdgtOxLx7DFQMIBmvNFH.ZVJKBtQRcLJevqQ.GpJnlioIdUvCDSW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Chad Harber', 'example-15@railstutorial.org',
+    '$2a$10$l.zy.3jnTUDDz4/QusuXCOqUbspvhw7fdkESse9tRIV/B6vm5..FW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-15@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Jena Reynolds', 'example-16@railstutorial.org',
-    '$2a$10$0md6VS1q7dZbAz6VEkshBeWNJFTt7mimWG4Nz2SLyU3qNTzi7iCC.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Zackary Ritchie', 'example-16@railstutorial.org',
+    '$2a$10$UZkfzvLTmu6j/iFTp1pzRuoU/paEGKK6DPlcrDc.PVBNT2lRAyyNy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-16@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Maura Wiza', 'example-17@railstutorial.org',
-    '$2a$10$CjgdC52VHoHA1YKRxK.6meHWGMxr0nyKYHvoab0ITt8fQNet/hqCC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Linnea Walter', 'example-17@railstutorial.org',
+    '$2a$10$qHWdP0r.eG2Rpf6Ot12i.e/iH3Ga/b8l/WdlzBErVDKybzLyj4tU.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-17@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cleta Huels', 'example-18@railstutorial.org',
-    '$2a$10$4PcA3zzsUEoG7GvxIUXnqufVcNznwcNFuj7WVe2SjbrEoVH2T02yK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mr. Kris Boyle', 'example-18@railstutorial.org',
+    '$2a$10$rlT9bCUVRfLi9A2HA2ajGOA9J6TClbe1vCaIeqqS1JXaBFtwuz3cW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-18@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Romaine Larson', 'example-19@railstutorial.org',
-    '$2a$10$ZaZUO0GkXh6UnBxQeEOjN.cwxjE0qR0OBZmBp4CLeUmJNLUg75ztK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Gary Gerlach', 'example-19@railstutorial.org',
+    '$2a$10$yPSqrszhBV9mLN5EWQu8EePyOzA8UmorPz0S.4TG8ASZ8tGmf5scy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-19@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'David Kassulke DDS', 'example-20@railstutorial.org',
-    '$2a$10$Hwz4C.lVjyo5bw1mXE.YT.8ZqKZeGTCPp.WwVZgj8QSlPavuy9Dcy'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Lawerence Miller III', 'example-20@railstutorial.org',
+    '$2a$10$4nGQxhoVXBOolLg.kHyyYu015yPkTD51RiyCDdAFvJ0D3qyjTQqp6', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-20@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Fernando Sauer', 'example-21@railstutorial.org',
-    '$2a$10$rR9HL.THMzzc7EmyEb.OROp9Fm5BYz8CLRBGjnEAzup/rjJLyYbyK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Nathaniel Bogisich DVM', 'example-21@railstutorial.org',
+    '$2a$10$EOVQ6tqovAutkGTMLR5rWeKfHfvE6A3wGBErSWlC4FrARHnkKAS62', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-21@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Michal Moore', 'example-22@railstutorial.org',
-    '$2a$10$1U8mrBIyXDFmZ3kdWnROfOddDik0IFDmZGkW5uU6y.137QQDGxghS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Hilton Schiller', 'example-22@railstutorial.org',
+    '$2a$10$AbTvRs9m8DoxEjY9M5kTWuZZXaFSeGYBbKStgHMfFmKA1g.FVjV4e', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-22@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Aurora Jakubowski Sr.', 'example-23@railstutorial.org',
-    '$2a$10$8U7L0caRoEYlQW1jcT9lueT82rwD9pIWDxZGP8wZxHEyfAMv695ny'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Winford Orn Sr.', 'example-23@railstutorial.org',
+    '$2a$10$ODnduw7SLHYK0ft.vdvpGOU4exKFF4Le3DQ.Y5KP359OptCdNp26m', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-23@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Frederic Crist', 'example-24@railstutorial.org',
-    '$2a$10$P24CoZkyrbuIG7qtfFpTMuQSIbtnVCudq32w0vImVQCpu1v5NCWuu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Chauncey Schoen', 'example-24@railstutorial.org',
+    '$2a$10$HFTnCV.BlpLkJwXB.yyCKuR0/Wn56WfEEkhJycDCFxnf4Ozr8J22K', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-24@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cliff Yost', 'example-25@railstutorial.org',
-    '$2a$10$LinRDu7ykOEOI5n.Eee97epeKHFWUVq6qaJTNKSynAvtnge9Cj5O2'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Monroe Stokes', 'example-25@railstutorial.org',
+    '$2a$10$8CNT9sGYYqLW2xEDdYYSYeY0FKq4fiegkwKxyQHSIK06HJ5qEPntG', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-25@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Phylicia Farrell V', 'example-26@railstutorial.org',
-    '$2a$10$F0AFOMJNpah61GmfkF32/.WCNbDjSHvlOBXDAZw0HauPIK2UVIMFC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Billi Cassin', 'example-26@railstutorial.org',
+    '$2a$10$K4jU3rJ9Ps7DWuDmiA5/HO0CPp86vYpW2ba91PSRWenVCQAcdUga.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-26@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Izetta Herzog', 'example-27@railstutorial.org',
-    '$2a$10$NmTwJfL/uRgiQkSkuIFtWe0wcVhIAsmkxj9i1./Eb5/EcFzJzfRDO'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Ms. Kareen Auer', 'example-27@railstutorial.org',
+    '$2a$10$kdxVidOkzKjebvxuqJsoFOaGiURWoE8r1zjwDg3Tx4VQwWRf3rY4W', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-27@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Daina Osinski', 'example-28@railstutorial.org',
-    '$2a$10$8ZviitvZSZREuubxrE6Sc.yD9Lui7gB9zrZMFMLNPsJ/OxzAVjPam'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Laure Cronin', 'example-28@railstutorial.org',
+    '$2a$10$KNXamCeu3YWCO.fQaC8qQerRMxgi5XEf3jdiP8dzJ85Sfos9/iYc2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-28@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mrs. Junita Hammes', 'example-29@railstutorial.org',
-    '$2a$10$7SgL8XsWgPZE3sfKWQPNaOLn6vYJr.kz7ER/N8K4.3dTeOxWzWmx.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Dr. Melia Wunsch', 'example-29@railstutorial.org',
+    '$2a$10$nwqEzyPfYGtQ3b3c3CJe6O145mi3AB9SdfxCj5MO8sBjATrbL4LkW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-29@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Ms. Ariel Ebert', 'example-30@railstutorial.org',
-    '$2a$10$9ZoPIzE39teJp4rnu1sL4OytkMUFiFv7/Zp5v4aChEb4ztulhW.ZG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Kourtney Feil', 'example-30@railstutorial.org',
+    '$2a$10$EjBZ465d4fbYnIG5jRexseND4hweaUdhE5nE/KQuEd5531amKKdky', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-30@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Carlos Rice', 'example-31@railstutorial.org',
-    '$2a$10$pYeKItolxCGEoZnYJTEkgu7nkCMzaIO90IzCFGU2B6J1JcrmHjaVu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Ms. Han Pfeffer', 'example-31@railstutorial.org',
+    '$2a$10$tu66MR26B5keYIAOloIAIe6oIP/Uns64Ie69WfjHZqCY.KXugc6M6', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-31@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Nena Nolan III', 'example-32@railstutorial.org',
-    '$2a$10$BIKRol4bFUh.PnSx5vs/k.Vchc4irSDTxhDH7fCHKecVBPkGPqGpC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Adrien Hintz', 'example-32@railstutorial.org',
+    '$2a$10$.Cj8cqi7lo38eRShPe61P.N7J2PVkALCEFdyVz.9mnL/RvS9DiTsm', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-32@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Pasty Shanahan', 'example-33@railstutorial.org',
-    '$2a$10$xqWfUBKQxqkEWxYAjfWdAuDbynjUks4PDd8OB8iL8VoCWaC2eG.tO'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Juliet Bruen', 'example-33@railstutorial.org',
+    '$2a$10$8OzUp0m/ANvamWiorEO4RuFDtECsws7z995w/9DxJ27/fTzlAU/1S', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-33@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cary Boyer', 'example-34@railstutorial.org',
-    '$2a$10$Ru8U3B/CHsXZlIS3jy1psOCtmIk.mellLdg9zbSfLsZP25.4M99tW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Saundra Kreiger', 'example-34@railstutorial.org',
+    '$2a$10$IL0j5UQMcHouI8MHAZpkou7vB2DFvjtEUwTHEphE1j9J2WSw6POxi', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-34@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Marcell Marvin', 'example-35@railstutorial.org',
-    '$2a$10$0chWAKeE8lX81MuwozeaouKXWQvtzQSWAyU/yUcQdtR2m5dbwe2cu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Raul Mertz', 'example-35@railstutorial.org',
+    '$2a$10$Hglmxo8UC3EaLVk2MexxiOxrt00mILHQnzNGeEG.AbMMQIbIWbEZ.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-35@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cornell Crooks', 'example-36@railstutorial.org',
-    '$2a$10$yphU2LRG17UxyKI2wfIUP.kdoyaDpqOAyej1N1onUFDwbV8/X/tFK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Larry Bartoletti', 'example-36@railstutorial.org',
+    '$2a$10$qYtjbQJ2ixHBzX9aoj580ek3eHNwjbojuAWChQ.RMWn4Kb2EnaB/G', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-36@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cheyenne Rowe', 'example-37@railstutorial.org',
-    '$2a$10$ozcWsLoysieQOM2QpLSbd.6jrBzOyLQok0ORJdBjFHBmZc9afxduq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Gaylord Bechtelar', 'example-37@railstutorial.org',
+    '$2a$10$/qcO//1jOPxIVq83SSWERe7QbpxkDms1tjokG..uv8jYjTRV4Eurm', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-37@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Neida Carroll', 'example-38@railstutorial.org',
-    '$2a$10$epqmrilbV8nOxb6MtmJzOuadZ1PPV.Dey/eJN2pZKk798cBaZP/Sa'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Wiley Crist', 'example-38@railstutorial.org',
+    '$2a$10$KaOd9ewOch77MCWNBFIwQ.k7wEVLUAW8/4wlVFZHls9b/0gGIYjh2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-38@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Josphine Hessel', 'example-39@railstutorial.org',
-    '$2a$10$scgb0z1cnGLOVOMua4KQLe430TMHSvo/vrbWQ1Gw2G8epFDXJ16xq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Layla Baumbach', 'example-39@railstutorial.org',
+    '$2a$10$tsc3FvIgYAb66yp7nGpqQOmjQryeJzO4RrY1kQPmCpZzaGbgFQ3cC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-39@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Burt Langosh', 'example-40@railstutorial.org',
-    '$2a$10$rNXapi3WX.kCgg6x5GPWL.udo2w3nZ5ABl6eCwBjGONCWrLrmijGK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Chieko Abshire III', 'example-40@railstutorial.org',
+    '$2a$10$GyDmGXO06SDF4envR5VOJO7rcSoXxNJunS2XX4qr/Gi41LSQzD7FK', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-40@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mrs. Elroy Bechtelar', 'example-41@railstutorial.org',
-    '$2a$10$OuMmCQVFjEkT51WikbQXEOuV6BhssQDZJsmZLjwSzSaK7ZziiMF3y'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Margurite Welch', 'example-41@railstutorial.org',
+    '$2a$10$0BsXIwIGbIe0yepTPafaXeTpDUhX4VNDH84hXVtIGrvOlCeo.UQpi', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-41@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Emanuel Lehner', 'example-42@railstutorial.org',
-    '$2a$10$GAGKUZON935ucy.E347Rn.9xO11giOWclhKcBu.9QbhfDvFizDsKG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Dr. Emmanuel Lang', 'example-42@railstutorial.org',
+    '$2a$10$wBGd2wqJ31N7/OFn./oWwO8yhxBOQyxixJ55SVWeXmPnz5S6jm1xK', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-42@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Sherlyn Mosciski', 'example-43@railstutorial.org',
-    '$2a$10$FBr0jif3SSn0dc0RoH3.ke37V2hBVL0CaJPXFqi.AmFNHko4HyQ4K'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mr. Yasmin Sporer', 'example-43@railstutorial.org',
+    '$2a$10$Z9MP0Qk40kwr0vakfbJWveh6oxf7jMdbOtpWtiyP3j8cwcrIf/7Wy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-43@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mr. Wilmer Volkman', 'example-44@railstutorial.org',
-    '$2a$10$1qqNi4gqpBhAZkwZPuafC.74mZuxs4z5kfJIEC8D/yp0gfg4GrBxy'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Greg Jacobi', 'example-44@railstutorial.org',
+    '$2a$10$Kd0AKXPIbYaRuvne8DbZUOpx9mqwdEG8lJBScjloFE7XWWVXOcVLW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-44@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Yee Johns', 'example-45@railstutorial.org',
-    '$2a$10$HzAyRmxgXeb3foEg6WJ15OvAzu8QAdeEJvMf/j4pUwfMThkyX9m5a'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Anisa Gislason', 'example-45@railstutorial.org',
+    '$2a$10$HlauhbzDvxN3Us/b4YiVreiIq7.hqdHP6w9ouBpg3ViDCL2GNTlkq', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-45@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Lauren Kuhic DVM', 'example-46@railstutorial.org',
-    '$2a$10$DPSUAhy4RphsbM0QQ7JjB.2UJOz./SBj6y3vjXYOM6Ibzrn76E0kq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Jacques Treutel', 'example-46@railstutorial.org',
+    '$2a$10$9.v1PC1ombht5qXQEvJ2s.IPMFZSQaOjiaNqEYOPtUOG2suyEGFoS', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-46@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Roscoe Bashirian I', 'example-47@railstutorial.org',
-    '$2a$10$3DyxCSwjJUUfnYGrMqBE7.UFqFZALDt24AfX3BPmTXH.tYPE/0yaW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Saul Murazik', 'example-47@railstutorial.org',
+    '$2a$10$qBeQhpjdsRXGiKEAOw4Z0e401chmfqd/9.kYyOU8Cx4S4mav9iSWy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-47@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Donnell Wiza', 'example-48@railstutorial.org',
-    '$2a$10$w7uTit1hRPjlUrWhirYPJO85C9Bc7AHnn3N11GBv54B7SoPiWGaQC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Meagan Herzog', 'example-48@railstutorial.org',
+    '$2a$10$5XGF7WHtsNkUE.KfXZ5TL.G.m/9aTxW8KkjloqloZuW/Jf1U0eW46', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-48@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Edda Greenfelder DDS', 'example-49@railstutorial.org',
-    '$2a$10$kgdZiEB5h/6vXxIltvj2L.uYN2tkjq/8DPQHFrIqCWaGBOQDqDwRe'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Cristina Volkman', 'example-49@railstutorial.org',
+    '$2a$10$rWgz0kqxaOG0yg6AzqF4bugr6TcfmEBjM6uqkyTi9o5GW16u.G58C', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-49@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Jayson Keebler', 'example-50@railstutorial.org',
-    '$2a$10$gFKLJ8AHaNYQ6gKCsEolzesCf1T/0DBZw6mN1m.mpOiAGVxjtkpLK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Hermila Murphy', 'example-50@railstutorial.org',
+    '$2a$10$DlPrdutQzBoXLBj8qbxfleTEQjawpSj6XaFyRMB4WazpaImjuOMMW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-50@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Miss Deloras Volkman', 'example-51@railstutorial.org',
-    '$2a$10$8tyUBvh9LLx/xfXm2WQ5VuQW7zJZcszZLaQM2sTPfc4zA7nxvu9y.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mr. Frank Little', 'example-51@railstutorial.org',
+    '$2a$10$as6q.chSDjzTl8RmYYUqdu70O8uFBojjvnrtN5un/knzXohGqyneu', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-51@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Jarrett Ortiz', 'example-52@railstutorial.org',
-    '$2a$10$qFf5/xPOhGJBNw9vt3WP.O8o6IYbdp9sPsG/LUQrMQauJuWuqi1h6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Tyrone Lehner II', 'example-52@railstutorial.org',
+    '$2a$10$7sm8uviEOGEL.wm7CnxGseO6lu1sDwuBg7WXMdvI2LWISRqF0YOFS', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-52@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Jesica Legros', 'example-53@railstutorial.org',
-    '$2a$10$v6DyK0uVoRxsX0ynpOkCk.4nRpbm19IHsVIEBNcf2Zhhn9LrUeZ3C'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Isaias Mante', 'example-53@railstutorial.org',
+    '$2a$10$2QElOK0blzV0VlOr.nHSaucen39oqPwHesxmjxmBn2PgRCW9Fae42', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-53@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Melia Koss', 'example-54@railstutorial.org',
-    '$2a$10$I09PQ9AxzniWSHMbAHKKFu.7vEB8MG5WW8Cxm8khpPv42FT72EXTi'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Edythe Nolan', 'example-54@railstutorial.org',
+    '$2a$10$hGfm6z34S.SRTyDPfbp08OYxxyXdGm3ikVWEoXMvX3wZGoyy.rjPy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-54@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Hosea Jakubowski III', 'example-55@railstutorial.org',
-    '$2a$10$6DytmA0ZpMpqvgJSNWr8fe.t0VqAbsFv.6.gWg1.0HWhhfVn/k8gm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Fritz Zieme', 'example-55@railstutorial.org',
+    '$2a$10$fxiB/qItP7Tl12JjFEqXzuwC/umcIKCs5orc9DwaZmDBuaDqRZRTa', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-55@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Pamila Kuhic', 'example-56@railstutorial.org',
-    '$2a$10$GW8ZPIjjcYydcsbQSJrmq.37gkU/FLL9SOgH/8FYrZKRi7peOnpm.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mrs. Graham Dickens', 'example-56@railstutorial.org',
+    '$2a$10$w5702zTkdbM463m1DYAeF.Uqtd9qlZACpi4ChV4DPI.qdIPV/WvDy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-56@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Gale Hartmann', 'example-57@railstutorial.org',
-    '$2a$10$FObKX0QCPt2KBsZBhIybFuvUBlhk04Tm77xpbSNHzitrAqseckOm.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Pamila Paucek', 'example-57@railstutorial.org',
+    '$2a$10$UYaVQeYIQd2G.ngbhp9pOuIV/easktAmnuf5KOzRsaj7weMHRtZYG', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-57@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Chun Okuneva', 'example-58@railstutorial.org',
-    '$2a$10$3g1kzQmZ/4w0ut7mTz2tDee/udFuUT2u85Qhwwwnl86Y1UMxewN1W'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Johnson Sauer', 'example-58@railstutorial.org',
+    '$2a$10$2q2OjOfWOycYqf8rMOuqeurHeqrEj7Jfc2xS6RFpbhFPQ3oqNWLJO', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-58@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Clarine Senger', 'example-59@railstutorial.org',
-    '$2a$10$Lmh/IP90d43jtShP0hdtxuRib8HTwFZtvL2yHTe0lVG.NlMOmAQGW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Robin Christiansen', 'example-59@railstutorial.org',
+    '$2a$10$lHizBNAzAhF0zwqIDm9kIOoPDHde7pplHZ87GlOuyGSXCWEv6r4ru', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-59@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Phuong Braun', 'example-60@railstutorial.org',
-    '$2a$10$zeL3SC3nDH7vabZu0FDPF.LphX5z1q3xr6uvZpMJQ1nlPMvIE4N6u'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Rory Towne', 'example-60@railstutorial.org',
+    '$2a$10$1xjVXNiSPnii.LTPmJsDzuD3y5civqh6efIpJBl79pzGikW0.3Eu2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-60@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Yong Green', 'example-61@railstutorial.org',
-    '$2a$10$2junPCkKsSq7QUX.EWNHvOuEbd7pZEVso9glbYqG8vQgsZxZA/v/K'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Spencer Walter', 'example-61@railstutorial.org',
+    '$2a$10$KDpPVZR0jGY0srUmladJWuMcZeTMt6QvYw6JLKWnVhPQOfXdU1tCS', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-61@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Ms. Reginald Reynolds', 'example-62@railstutorial.org',
-    '$2a$10$dGPEm0NKtw05PCS7vGeIjOPXSPmu.C1F2li7Yzs2yaKmD.GHYptfe'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Sandy Macejkovic', 'example-62@railstutorial.org',
+    '$2a$10$ABYIYr/uhxD4tU6UYOp4mOwovK6sA.SbDk/zjZV3dsAMWoJrg3u9q', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-62@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Chin Lakin', 'example-63@railstutorial.org',
-    '$2a$10$hOJ1/sbVSwVgcrcpB8YRr.3cp71qEURXXeZRSePtcE9VNfyk6TkLu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Greg Parker', 'example-63@railstutorial.org',
+    '$2a$10$VJybT9TH3673Ta2D2NASXOrfZY5XjEz7wB..Wi2moET1uEY/gxk5e', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-63@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Normand Hahn DVM', 'example-64@railstutorial.org',
-    '$2a$10$Obmbloyr94D0aN7oN3CpueV3IT2GRsbTl8S6V/pJppUAzh8fMgH9q'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Corie Vandervort', 'example-64@railstutorial.org',
+    '$2a$10$ZGmuqSpGXa1RGcx1TwTgKeqvDb0p/3.DRbZp1SRn2Faws8BL2trEK', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-64@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Jerold Thompson', 'example-65@railstutorial.org',
-    '$2a$10$0GO30FTDrt1KZ1hq2CR8r.IzEzmviGtwSZ98ldE.di98tzlGxlxti'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Bettyann Leffler', 'example-65@railstutorial.org',
+    '$2a$10$FX0rEH1AWocyyK3D0ERhb.iDa9cdR407O9vQvXeyJzsko9HzGyv.y', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-65@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Erik Ondricka I', 'example-66@railstutorial.org',
-    '$2a$10$3K1U3ZJeML4WjO0dDnh97./GvMrkca5ysD06uSW.WfOFVX.fUuBGq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Arnetta Wisoky', 'example-66@railstutorial.org',
+    '$2a$10$/4BpzRT1wFHAfml1lYgB3ecp1g8qVjsyr1bzYJDhHuqMAfGbYSwCe', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-66@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dani Bashirian', 'example-67@railstutorial.org',
-    '$2a$10$imOFmgEYvYxC9p7BnXRyc.0U35IzeE2s2ZIVxh1BCKaobZDNfYYCC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Ms. Beau Schmidt', 'example-67@railstutorial.org',
+    '$2a$10$20LTZVrCeJZbRx5bPcuZ2eM4tQEm47AsupSCx48q7EHsGFtcbLxqq', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-67@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Salvatore Collins', 'example-68@railstutorial.org',
-    '$2a$10$3jVA3A9tGajKCe5KzIPiSuyhoEV6HJAGG1xGMwOzuqraIaVYUUE5m'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Kenny Hegmann', 'example-68@railstutorial.org',
+    '$2a$10$fVOE7Gqz9gPWrudfq7WMv.Ay8ad6WDmoV/evoseNyXoV9mk1IHT9u', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-68@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Tayna Baumbach', 'example-69@railstutorial.org',
-    '$2a$10$IBXjCZM5tJ7QWOaMaDJwG.EQao/dIgpTO8q2ye/k6udHv.sP5QoBK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Amber Vandervort Sr.', 'example-69@railstutorial.org',
+    '$2a$10$o9Bpx0pZZx9G7WpMPoBgqe49UJUStPnuDAkMgpxd1ikfQTYipSXK.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-69@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Fred Leffler', 'example-70@railstutorial.org',
-    '$2a$10$OtdATIamheus812eKou1VOY5gckx8lda/50DWomYcjdBXIVo.aAGi'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Del Schaefer', 'example-70@railstutorial.org',
+    '$2a$10$rS3TeJscXWYXixR2g9o2zO7CNkbpPU1A2bMGUKRDTID/K1rCh6sx.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-70@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Sheridan Fisher', 'example-71@railstutorial.org',
-    '$2a$10$keRpjTqJSHOtJSEuVkNwgOKHunB6j/L0SdNxk5CvKfEgC19bO/jaS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Darcey Ondricka', 'example-71@railstutorial.org',
+    '$2a$10$DJdmoSZJ55Pfz8GIX8Fw9.oZNS8AFN1k6fJQJ8BeB5Eh/fe/48ivS', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-71@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Miss Bennie Hills', 'example-72@railstutorial.org',
-    '$2a$10$16sTzqCI4kpGALriobW8ze2b7JordhaAzQUm0pt3TBaa5pRV.mIZC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Lindsey Pacocha', 'example-72@railstutorial.org',
+    '$2a$10$c/BwU8A2VTNcpYWOj55PpuI2wGeabv3B3gR8LnI8XXEGeYmsTWwqe', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-72@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Beata Romaguera DVM', 'example-73@railstutorial.org',
-    '$2a$10$e2Hzwgkd35FZwh42/TcLb.CW3zpjbptp/t8YPDK3v6ze03h5Qe7A6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Katy Simonis DVM', 'example-73@railstutorial.org',
+    '$2a$10$cjKYSaXBH2IzMr7MHXLuwe0drDtR7gYk/2Nu.rUdM8n047s1Mjv/y', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-73@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Penelope Watsica DVM', 'example-74@railstutorial.org',
-    '$2a$10$yFpmszJU9vGL3jnbHmAkm.PS7xdBv4Mtndr0GZ8A3dDfzaXQQXesm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mrs. Carola Stanton', 'example-74@railstutorial.org',
+    '$2a$10$FHQcktnuZ01wZvuhRiMlMuGH1fFiQgO56JtGKbuf2Ra7SQgAw5Eay', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-74@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mark Towne', 'example-75@railstutorial.org',
-    '$2a$10$3o3sZssHMZpUrlvuzvTKbO4EJtW2Z4xR79aqrwsqVC3hSXnc/5IdC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Chin Hilpert', 'example-75@railstutorial.org',
+    '$2a$10$2/6Y6he3481EpzwmDy6lCOxiLxB9jrHcOy2QYzR46jxrvG0Ct2PT2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-75@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Emmitt Kessler DDS', 'example-76@railstutorial.org',
-    '$2a$10$pZX5veg1LuV4zo/h57hSP.LFhb1uiSYEQuzPJFrRQ8gMz/.xhX35e'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Amberly Champlin', 'example-76@railstutorial.org',
+    '$2a$10$8p5IUOabUDBbZP.MJwIwTuwdgPHRxDIuldMIZlEmieT/Obg47y4Ya', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-76@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Maegan Conroy II', 'example-77@railstutorial.org',
-    '$2a$10$OPbk0L4WgQWkV2A14UG4IOhMaAePvIINBZiGNrq.J9PggRHnMpqMy'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Miss Cody Lind', 'example-77@railstutorial.org',
+    '$2a$10$9BrXfsAlR1Rs7rbfTo8YleIXfxdr9AcGBi3UaJEfhgDS95yZp0xaW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-77@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Ms. Quyen Berge', 'example-78@railstutorial.org',
-    '$2a$10$qxhdXAYBCjlx0MGdxHJ83OQSrNX3VeIH5276sLcPd066YzN3g4wGm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Keneth Shanahan', 'example-78@railstutorial.org',
+    '$2a$10$pq.yGA944oiGAfQZhnA3Lu6xWkohLza69nyQ9LMfP8VEYJ0AKlrtW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-78@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mathew Kautzer', 'example-79@railstutorial.org',
-    '$2a$10$Jxu5pmTU6xc9K2iUE46LZe09t5c7LajbEB/fdxJkNQCjj.DxepEBa'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Rutha Fahey', 'example-79@railstutorial.org',
+    '$2a$10$iQMHUYFCDVQDqm.JWVSi4eaMekZbQhiC0qJBD/otJCfC9/OOA/FMe', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-79@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dwain Kling V', 'example-80@railstutorial.org',
-    '$2a$10$tRMAGv94DYlT6u202Zn2kOuipdN473WWVRlsLnLlDz0rwe1fMtHXS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Angela Hammes', 'example-80@railstutorial.org',
+    '$2a$10$BvLAiRnn6IW0.1CtghWAfejb/cRXhYVzHytym.5/EnPkDMdghFVe6', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-80@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mr. Emelia Boyer', 'example-81@railstutorial.org',
-    '$2a$10$Zk4u0cj1/EdTYWqc7PXQKeZyGV9EMcc3igDFuQyb5FETCnikrDwQW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Frederic Johns DDS', 'example-81@railstutorial.org',
+    '$2a$10$lbCCubIn9WifpMvdYLf0Me0tAODJUGo6fwxpsnUbI/ZmGrjtI9U5e', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-81@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Noe Reynolds V', 'example-82@railstutorial.org',
-    '$2a$10$UVusd2SjdjW2L6R2CUUS2u2kIbFEDFTvrE.4gBxS/tR9kDAlcriDG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Nelia Carroll', 'example-82@railstutorial.org',
+    '$2a$10$pZq3j8wEtuogDy2vFWJcXO/BXx/Yxnw2EClnhzDgG7fjWzJ9NSXMK', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-82@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Mr. Bobby Bartoletti', 'example-83@railstutorial.org',
-    '$2a$10$KxVIFk7Z0Ar/FmA1eg1FHO1ehv7D.dq91cWD.1OwsFE65v/mJGkEC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Portia Kris', 'example-83@railstutorial.org',
+    '$2a$10$SYQz9L.F.4aaRvjRaDyq/ekWupa87j7SS5674qUjiumy9/NWJXQSC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-83@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Geraldo Pagac', 'example-84@railstutorial.org',
-    '$2a$10$a5EEyKv3ZtUA4cvNuVrVA.UoNEpHwJoENLMxcNuJvtQwKOc7Q7PWG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Dr. Echo McClure', 'example-84@railstutorial.org',
+    '$2a$10$S0A2FSKeXc7BCB6ac5cDhOqXgQj6kxkjeJt3AKBPgUwB2ul.pEkBi', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-84@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Allan Prohaska', 'example-85@railstutorial.org',
-    '$2a$10$g9o63r9vdiYONts4Yqw3oOnalhSj56tXvPmFZ4JRnjUuNygAf3HI6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Emilie Welch', 'example-85@railstutorial.org',
+    '$2a$10$eaTJHcg32X.0dHNSlfH10OMiMmmw4VNLxifWgeLptu/gVWNyfJIhC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-85@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Maryanne Rempel', 'example-86@railstutorial.org',
-    '$2a$10$gytSLfjSikQ0.u3uUfFaE.aIUV.hvvq4MmOiM8/d.ukBwWejxILDC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Leonardo McKenzie DDS', 'example-86@railstutorial.org',
+    '$2a$10$iEqUVGiO5lR5bh.cbRDFc.tCMUH8bUxf55DfdVEix2gT.X0JDDiGm', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-86@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Cody Mosciski', 'example-87@railstutorial.org',
-    '$2a$10$fx.pWPafUhiGfFBLvaKXD.bv2S/DkYGXuvouOfSZ0R3.matYbqXge'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Charlsie Stoltenberg', 'example-87@railstutorial.org',
+    '$2a$10$MKaTfVOOKqfQbcN7uYL0JeG4OQ1hjxDvRd/KT5ZDSYnN8NBUAYSe6', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-87@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Zachary Bogisich', 'example-88@railstutorial.org',
-    '$2a$10$TPnvMkcmQvqGXQZKRyP4IO.u01a0AA1cPyTqi0N8HiEQ3XmdBtTTC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Lou Moore', 'example-88@railstutorial.org',
+    '$2a$10$oE8rY.k2uO4M1FHKidgM.uyoqvLSLgAv8QFNBD2fFjwkzLlyDVhmO', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-88@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Lucienne Gerhold', 'example-89@railstutorial.org',
-    '$2a$10$abRK1xV0ecFRIveSDN646e5wLneFC66q5mE3kh2kELoJ6nHpvGD/G'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Miss Dulcie Kunde', 'example-89@railstutorial.org',
+    '$2a$10$DpWZ1eLWNDZ/BR9TkiFQPujA7XI1esRZ0rU4VLGTVSDj/s.c6IcwO', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-89@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Lachelle Franecki', 'example-90@railstutorial.org',
-    '$2a$10$jixMddsksecW8Q22uttmhOBsCqRzIzYSp53733AamrzjFZAlBH6dW'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Dr. Eldon Stehr', 'example-90@railstutorial.org',
+    '$2a$10$4Ai7gBto.danZlwIFNwmYOXhQ/cv/7ELsohZIwgRKw1o.oAQP1B.G', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-90@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Ramiro Kertzmann', 'example-91@railstutorial.org',
-    '$2a$10$Oan6Oj1AKsrO9k5oYzuNx.neB4CBf.zPiH/a0Ql0rbRHxsiwuwqZK'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Tari Hahn', 'example-91@railstutorial.org',
+    '$2a$10$5CXsJJwZU36eggqTW0PxUejlqrsvWcbJkZ.lm6DHWTn/o0yUQJzFC', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-91@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Reggie Boyer', 'example-92@railstutorial.org',
-    '$2a$10$GyEYBXdppGY2wd7BCthZJuv8sQ5haoxtfGjPip1fGN/T768MP33Q6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Roman Bernier', 'example-92@railstutorial.org',
+    '$2a$10$Y6qQUJo.e0jdLl/u5IWIlO..5xbwAi/bzgL8rVYK1xStXMWV0/hIy', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-92@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Adan Bartoletti', 'example-93@railstutorial.org',
-    '$2a$10$H7gooOCreTnKHxOtLox16ObVxMRGfw0P71SSDAXecw4cepC13nBvC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Chu Koepp', 'example-93@railstutorial.org',
+    '$2a$10$IQ.svrPUc.f944kESExkLu0gc7QvJTwwhjCsSw46fHyQzRcxHAW4.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-93@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Willa Reilly', 'example-94@railstutorial.org',
-    '$2a$10$OwaNCB6qeu2R.upcmwB5fOPutYLTknI/SBp.iwI0XcQrkdFMPrMby'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Mrs. Lindsey Dickens', 'example-94@railstutorial.org',
+    '$2a$10$Gd7F/zrRNkp8HmXfX7hXJe2C2VjSYYiYID2G4C6L5L1/6en9qlGla', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-94@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Trinity McCullough', 'example-95@railstutorial.org',
-    '$2a$10$KZgNkK8/TlANIdg.SD10KOsXI8C53is9Zt4AUfGrbYhLAJGhF6sy.'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Twyla Stark I', 'example-95@railstutorial.org',
+    '$2a$10$b/xX4Cwj/Laor3GMBfzGK.gncKDNuphy9CkHJ4zGoefM8K2rlb9U2', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-95@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Stacy Kautzer', 'example-96@railstutorial.org',
-    '$2a$10$2Xk6HvjXoGLLyuxolW35JO55j5XG4R4OrBiFecTsJMNF36eG8IfH6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Marg Kovacek', 'example-96@railstutorial.org',
+    '$2a$10$TjJLM2UBSASbWTwjZLZRuuGOGmYcwgr.OqL11JFfozVCpNzRHmtEW', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-96@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Anthony Mohr', 'example-97@railstutorial.org',
-    '$2a$10$wUdiFw23.OnyACWB0pmtxup/EleOWUNrxvanhaUGezIbAaXWcwyyq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Fonda Gerlach', 'example-97@railstutorial.org',
+    '$2a$10$e.8XAw60aHWQsoWE6DEIDOfXLrohkj.uBXu3LD5Wpu.2dRUD4Qdli', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-97@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Imogene Koss', 'example-98@railstutorial.org',
-    '$2a$10$33n2nbwNZZAuHsjNocfK2u6hpsp0otx0D2u.KBUgzPgRvpKvtg5hG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Arletta Zemlak', 'example-98@railstutorial.org',
+    '$2a$10$BwfM8jhxTbyo23JikwCdyuougoslfYY59APQ03dZvxzuNCatZK12.', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-98@railstutorial.org');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT uuid_generate_v1(), 'Dr. Danita Kemmer', 'example-99@railstutorial.org',
-    '$2a$10$24jdSpGMppeQHMkNFD/Cve/WXNd.iArS18bRq2/BSPIW7FjvC8IAi'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT uuid_generate_v1(), 'Joline Rutherford II', 'example-99@railstutorial.org',
+    '$2a$10$4bhPnZH1N30TFucpjYu5z.B3YxhOhRlqWifhofZmtnrd0Cg.9WAlm', true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='example-99@railstutorial.org');

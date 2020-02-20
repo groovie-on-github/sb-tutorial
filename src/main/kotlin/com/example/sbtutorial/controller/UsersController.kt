@@ -1,6 +1,8 @@
 package com.example.sbtutorial.controller
 
 import com.example.sbtutorial.helper.SessionsHelper
+import com.example.sbtutorial.mail.MailSenderService
+import com.example.sbtutorial.mail.SendFailedException
 import com.example.sbtutorial.model.UpdateGroup
 import com.example.sbtutorial.model.user.User
 import com.example.sbtutorial.model.user.UserForm
@@ -9,10 +11,6 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.beans.propertyeditors.StringTrimmerEditor
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.validation.BindingResult
@@ -21,12 +19,13 @@ import org.springframework.web.bind.WebDataBinder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 class UsersController(private val us: UsersService,
-                      private val am: AuthenticationManager,
-                      private val pe: BCryptPasswordEncoder): BaseController() {
+                      private val ms: MailSenderService): BaseController() {
 
     companion object {
         const val BASE_PATH = "users"
@@ -45,7 +44,6 @@ class UsersController(private val us: UsersService,
 
     private val log = LogFactory.getLog(UsersController::class.java)
 
-init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
 
     @InitBinder("userForm")
     fun initBinderUser(binder: WebDataBinder) {
@@ -56,8 +54,9 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
     @ModelAttribute("userForm")
     fun modelUserForm(@PathVariable("id", required = false) id: UUID?): UserForm {
         log.debug("#modelUserForm($id) called!!")
-        val user = if(id != null) us.findById(id) else null
-        return if(user == null) UserForm(passwordEncoder = pe) else UserForm.from(user, pe)
+        val user = if(id != null) us.findActivatedById(id) else null
+        log.debug(">> user => $user")
+        return if(user == null) UserForm() else UserForm.from(user)
     }
 
 
@@ -69,7 +68,7 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
 
         mav.viewName = VIEW_NAME_INDEX
         mav.model[TITLE_KEY] = TITLE_KEY_INDEX
-        mav.model["users"] = us.findAll(PageRequest.of(pageable.pageNumber, size ?: 30))
+        mav.model["users"] = us.findAllActivated(PageRequest.of(pageable.pageNumber, size ?: 30))
         mav.model["gravatarOpts"] = mapOf("size" to 50)
 
         log.debug(">> $mav")
@@ -81,9 +80,14 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
              @ModelAttribute("userForm") userForm: UserForm): ModelAndView {
         log.debug("#show called!!")
 
-        mav.viewName = VIEW_NAME_SHOW
-        mav.model[TITLE_KEY] = TITLE_KEY_SHOW
-        mav.model[TITLE_ARGS] = userForm.name
+        if(userForm.id == null) {
+            mav.viewName = "redirect:/"
+
+        } else {
+            mav.viewName = VIEW_NAME_SHOW
+            mav.model[TITLE_KEY] = TITLE_KEY_SHOW
+            mav.model[TITLE_ARGS] = userForm.name
+        }
 
         log.debug(">> $mav")
         return mav
@@ -103,6 +107,7 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
     @PostMapping("/signup")
     fun create(@Validated @ModelAttribute("userForm") userForm: UserForm,
                result: BindingResult,
+               request: HttpServletRequest,
                redirect: RedirectAttributes,
                mav: ModelAndView): ModelAndView {
         log.debug("#create called!!")
@@ -116,9 +121,12 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
             mav.model[TITLE_KEY] = TITLE_KEY_NEW
 
         } else {
+            userForm.activationToken = us.newToken()
+            userForm.activationDigest = us.digest(userForm.activationToken)
+            userForm.passwordDigest = us.digest(userForm.password!!)
             val saved = us.save(userForm.populate(User()))
             log.debug(">> create succeeded!!")
-
+/*
             // ログイン処理を行う
             val authRequest = UsernamePasswordAuthenticationToken(userForm.email, userForm.password)
             val authResult = am.authenticate(authRequest)
@@ -127,6 +135,28 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
             mav.viewName = "redirect:/$BASE_PATH/${saved.id}"
             redirect.addFlashAttribute("flash",
                 mapOf("success" to "view.users.show.welcome"))
+*/
+            val activationUrl = UriComponentsBuilder.newInstance()
+                .scheme(request.scheme).host(request.serverName)//.port(request.serverPort)
+                .path("/account_activation/${userForm.activationToken}/edit")
+                .queryParam("email", "{email}").build(saved.email).toString()
+
+            val params = mapOf("name" to saved.name, "url" to activationUrl)
+
+            try {
+                ms.accountActivation(saved.email, params)
+                redirect.addFlashAttribute("flash", mapOf("info" to "view.users.create.mail.sent"))
+
+            } catch(e: SendFailedException) {
+                log.warn(">>")
+                log.warn(e.text)
+                // test用
+                if(log.isDebugEnabled) { request.setAttribute("activationToken", userForm.activationToken) }
+
+                redirect.addFlashAttribute("flash", mapOf("warning" to "view.users.create.mail.failed"))
+            }
+
+            mav.viewName = "redirect:/"
         }
 
         log.debug(">> $mav")
@@ -165,6 +195,7 @@ init { us.findAll().also { if(it.isNotEmpty()) log.debug(it[0].id) } }
             mav.model[TITLE_KEY] = TITLE_KEY_EDIT
 
         } else {
+            if(userForm.canAcceptPasswordDigest()) userForm.passwordDigest = us.digest(userForm.password!!)
             us.save(userForm.populate(user))
             log.debug(">> update succeeded!!")
 

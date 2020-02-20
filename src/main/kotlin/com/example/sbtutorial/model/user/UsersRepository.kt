@@ -9,9 +9,9 @@ import java.util.*
 @Repository
 interface UsersRepository: JpaRepository<User, UUID> {
 
-    //serviceからfindAll(Pageable)を呼ぼうとすると
-    //findAll(Example)の型推論が出来ないと言われたので定義した
-    fun findAllByOrderByCreatedAt(pageable: Pageable): Page<User>
+    fun findAllByIsActivated(isActivated: Boolean, pageable: Pageable): Page<User>
+
+    fun findByIdAndIsActivated(id: UUID, isActivated: Boolean): User?
 
     fun findByEmail(email: String): User?
 }

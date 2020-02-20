@@ -19,7 +19,7 @@ class Account(private val user: User,
 
     override fun getAuthorities() = authorities
 
-    override fun isEnabled() = true
+    override fun isEnabled() = user.isActivated
 
     override fun isCredentialsNonExpired() = true
 

@@ -17,7 +17,7 @@ class UsersRepositoryTests (@Autowired private val ur: UsersRepository) {
     @BeforeEach
     fun setUp() {
         user = UserForm("Example User", "user@example.com".toUpperCase(),
-            "foobar", "foobar", pe).populate(User())
+            "foobar", "foobar").apply { passwordDigest = pe.encode(password) }.populate(User())
         ur.saveAndFlush(user)
     }
 

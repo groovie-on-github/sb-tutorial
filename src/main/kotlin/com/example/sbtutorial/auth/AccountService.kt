@@ -10,11 +10,13 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
-class AccountService(private val us: UsersService, private val jt: JdbcTemplate): UserDetailsService {
+class AccountService(private val us: UsersService, private val jt: JdbcTemplate,
+                     private val passwordEncoder: PasswordEncoder): UserDetailsService {
 
     private val log = LogFactory.getLog(AccountService::class.java)
 
@@ -22,8 +24,8 @@ class AccountService(private val us: UsersService, private val jt: JdbcTemplate)
     private lateinit var platform: String
 
     private val insertAdminTemplate = """
-        INSERT INTO "user"(id, name, email, password_digest, is_admin, created_at, updated_at)
-          SELECT %s, ?, ?, ?, true, CURRENT_TIMESTAMP AS cat, CURRENT_TIMESTAMP AS uat
+        INSERT INTO "user"(id, name, email, password_digest, is_admin, is_activated, activated_at, created_at, updated_at)
+          SELECT %s, ?, ?, ?, true, true, CURRENT_TIMESTAMP AS aat, CURRENT_TIMESTAMP AS cat, CURRENT_TIMESTAMP AS uat
     """.trimIndent()
 
 
@@ -35,12 +37,12 @@ class AccountService(private val us: UsersService, private val jt: JdbcTemplate)
         return Account(user, getAuthorities(user))
     }
 
-    fun registerAdmin(admin: AuthProperties.Admin, passwordEncoder: BCryptPasswordEncoder) {
+    fun registerAdmin(admin: AuthProperties.Admin) {
         log.debug("#registerAdmin called!!")
 
         if(!admin.isValid()) throw IllegalArgumentException("invalid admin properties($admin)")
 
-        if(us.findByEmail(admin.email) == null) {
+        if(us.findByEmail(admin.email.toLowerCase()) == null) {
             val funcUuidGen = if(platform == "postgres") "uuid_generate_v1()" else "RANDOM_UUID()"
             val insertAdminSql = insertAdminTemplate.format(funcUuidGen)
             val passwordDigest = passwordEncoder.encode(admin.password)

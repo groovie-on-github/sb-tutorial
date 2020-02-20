@@ -48,7 +48,7 @@ class UsersIndexTests @Autowired constructor(private val us: UsersService,
         assertThat(usersPage.getByXPath<HtmlElement>("//nav[@class='pagination-fragment']"))
             .isNotEmpty.hasSize(2)
 
-        us.findAll(PageRequest.of(0, 30)).content.forEach {
+        us.findAllActivated(PageRequest.of(0, 30)).content.forEach {
             val userLink = usersPage.getByXPath<HtmlElement>("//ul[@class='users']//a[@href='/users/${it.id}']")
             assertThat(userLink).isNotEmpty.hasSize(1)
             assertThat(userLink[0].textContent).isEqualTo(it.name)
@@ -66,7 +66,7 @@ class UsersIndexTests @Autowired constructor(private val us: UsersService,
             .hasSize(2)
 
         val ul = usersPage.getByXPath<HtmlElement>("//ul[@class='users']").first()
-        us.findAll(PageRequest.of(0, 30)).forEach {
+        us.findAllActivated(PageRequest.of(0, 30)).forEach {
             assertThat(ul.getByXPath<HtmlElement>("//a[@href='/users/${it.id}']"))
             if(it != admin) {
                 assertThat(ul.getByXPath<HtmlElement>(".//button[@formaction='/users/${it.id}/delete']"))

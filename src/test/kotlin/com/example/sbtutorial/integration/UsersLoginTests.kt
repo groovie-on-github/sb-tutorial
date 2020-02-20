@@ -26,8 +26,8 @@ import java.time.Duration
 
 @WebMvcTest(SessionsController::class, StaticPagesController::class, UsersController::class)
 class UsersLoginTests @Autowired constructor(
-    private val us: UsersService, private val authProperties: AuthProperties,
-    private val mvc: MockMvc, private val client: WebClient): BaseTestSetup(client) {
+    private val us: UsersService, private val mvc: MockMvc, private val client: WebClient,
+    authProperties: AuthProperties): BaseTestSetup(client) {
 
     private lateinit var user: User
 
@@ -246,8 +246,9 @@ class UsersLoginTests @Autowired constructor(
             }
 
         // 別ユーザーで非永続ログイン
-        val user2 = UserForm("test user2", "user2@example.com",
-            "password", "password", pe).populate(User())
+        val user2 = UserForm("test user2", "user2@example.com", "password", "password")
+            .apply { passwordDigest = us.digest(password!!) }
+            .populate(User()).apply { isActivated = true }
         us.save(user2)
 
         result = TH.loginAs(mvc, user2, false, null, *(loginCookie))

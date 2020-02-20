@@ -3,6 +3,7 @@ package com.example.sbtutorial.controller
 import com.example.sbtutorial.auth.AuthProperties
 import com.example.sbtutorial.helper.SessionsHelper
 import org.apache.commons.logging.LogFactory
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.web.savedrequest.SavedRequest
 import org.springframework.stereotype.Controller
 import org.springframework.util.Base64Utils
@@ -75,13 +76,21 @@ class SessionsController(private val authProperties: AuthProperties): BaseContro
     }
 
     @PostMapping("/login-error")
-    fun loginError(redirectAttributes: RedirectAttributes,
+    fun loginError(request: HttpServletRequest,
+                   redirectAttributes: RedirectAttributes,
                    mav: ModelAndView): ModelAndView {
         log.debug("#loginError called!!")
+        val cause = request.getAttribute("SPRING_SECURITY_LAST_EXCEPTION")
+        log.debug(">> $cause")
 
         mav.viewName = "redirect:/login"
-        redirectAttributes.addFlashAttribute("flash",
-            mapOf("danger" to "view.sessions.new.login-error"))
+
+        val message = when(cause) {
+            is DisabledException -> { "warning" to "view.sessions.new.login-error.disabled" }
+            else -> { "danger" to "view.sessions.new.login-error" }
+        }
+
+        redirectAttributes.addFlashAttribute("flash", mapOf(message))
 
         log.debug(">> $mav")
         return mav

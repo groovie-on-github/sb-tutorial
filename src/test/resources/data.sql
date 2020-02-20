@@ -1,112 +1,147 @@
-INSERT INTO "user"(id, name, email, password_digest, is_admin)
+INSERT INTO "user"(id, name, email, password_digest, is_admin, is_activated, activated_at)
   SELECT RANDOM_UUID(), 'Michael Example', 'michael@example.com',
-    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O', true
+    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O', true,
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='michael@example.com');
 
-INSERT INTO "user"(id, name, email, password_digest)
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
   SELECT RANDOM_UUID(), 'Sterling Archer', 'duchess@example.gov',
-    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O'
+    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='duchess@example.gov');
 
-INSERT INTO "user"(id, name, email, password_digest)
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
   SELECT RANDOM_UUID(), 'Lana Kane', 'hands@example.gov',
-    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O'
+    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O',
+    false, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='hands@example.gov');
 
-INSERT INTO "user"(id, name, email, password_digest)
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
   SELECT RANDOM_UUID(), 'Malory Archer', 'boss@example.gov',
-    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O'
+    '$2a$10$vTMfKHlPfq/RLgHzgQd59.hKG63IPGDLj8oHLJdUtAj65nmflgm2O',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='boss@example.gov');
 
 
+/*generated dummy users*/
 
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 1', 'user-1@example.com', '$2a$10$PkzgSibYcXqY2WvMcjtcqOU5.7JI7QAdG1nUgc4ldPK8E6eunPzcq'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 1', 'user-1@example.com', '$2a$10$N/7leuG70TNCi0cRKkIsseRJD.ijCXvGW4jjwTzgi.oIqVvZnSBx2',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-1@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 2', 'user-2@example.com', '$2a$10$sZes20crQlkEuQ/.JKTOGONYFPXWvJEprz1RKS71826TstFFjfK.y'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 2', 'user-2@example.com', '$2a$10$B6aEHN2At9RKb.LrZKEVTO9CfUTA.LV6AfXVoEg5Fw4jqD3eyVzk6',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-2@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 3', 'user-3@example.com', '$2a$10$rR301tSKVSo/BHcOYjRl5eYCFZrnLPgk5I0At/pHAqHaQv2u6xO7S'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 3', 'user-3@example.com', '$2a$10$8ylBgrVpcvjIO64nXHArse9LXvOIM.5cF8Dr3gI8/1r5wV1T9HLNK',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-3@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 4', 'user-4@example.com', '$2a$10$SSPlrTP/QxqNX9u6aUplIuLF853bJIDpN3KjKZ3xyzhZgny1QXORm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 4', 'user-4@example.com', '$2a$10$lYd/Qsz8waK9M6YtPxWuEuGk.O.uW3wG.0jMohmpui2mYXcYMNJOK',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-4@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 5', 'user-5@example.com', '$2a$10$fXxLlgPkR3In1CgNtkUuT.bGPNguckzGAlthnFb5u.i0XnEo9oxQu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 5', 'user-5@example.com', '$2a$10$AuV4C5sOLnij7slYRT6vT.3AN4/0rrzf7Y4d5HJUb/lHzD5qYDSle',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-5@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 6', 'user-6@example.com', '$2a$10$WqAY.bUaRJ8nSbo4It9JHOiBmTH2Dwx3szQpx95iaTVyoNLgAQ93C'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 6', 'user-6@example.com', '$2a$10$u8dlxsB5JzD.iAqgtsciJusENhh7QyW6cRG6zCpkKqH77JS//hOkS',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-6@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 7', 'user-7@example.com', '$2a$10$/sDnK6ttDeMwQ0tTxojdMe3OCKCgASAjhZumtXyVXsLrYQNMcoU7i'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 7', 'user-7@example.com', '$2a$10$gIuuvDHmts4pICn8j88T8.RCxzQgiv22jmkJGoOYEZt3ZXRjPmoyS',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-7@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 8', 'user-8@example.com', '$2a$10$mHBL2Cc9OMd59o9YfraCr.a5kGcuQG.xZkR6JsdkkMicNtw4Fm0SO'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 8', 'user-8@example.com', '$2a$10$Vc8mPH9cS1/gqAFztRSK7eB3S7ZMjbLNg56Rhj74zNbt840712bHi',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-8@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 9', 'user-9@example.com', '$2a$10$NETLs9ltTns47kMJOkeo9u12rF4K8IC/DWgJ4nHtgVrYI.f5IWBIS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 9', 'user-9@example.com', '$2a$10$/bR9yYMccbpuynXDv31Y/uKgr7TVSNelVD6iW1bILLh8QQVaO9p3i',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-9@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 10', 'user-10@example.com', '$2a$10$WCD3dnUs0w8lHnaU4ieVW.SBAXgQIwYKq42ntk7Cm26MAXy1cGkVi'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 10', 'user-10@example.com', '$2a$10$hJePC7ZVLhBz8gu.oJGMf.WxTXpLB5p8K9npMpecGnB7U0sjph0UW',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-10@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 11', 'user-11@example.com', '$2a$10$8jp.p9yAlO6FGp8JGwJ1suGyBFRAlWbYotANGF9rxvg08dn3iBOkm'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 11', 'user-11@example.com', '$2a$10$emDkUixAAzM0bw86lwMKF.JQLdmMpU5rhtssUWkU7koWotDUUy/l2',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-11@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 12', 'user-12@example.com', '$2a$10$f.al6Vue4MriFm.2sJUQTOJi1XX0c6ZnvyrM9qwXpYeCxZvcY1c/i'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 12', 'user-12@example.com', '$2a$10$LGtzPrbVVFm2tyq2X.NaH.oXO6VVRqxfUt/jZBl0T4Yno2csrq12O',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-12@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 13', 'user-13@example.com', '$2a$10$sl.P6XwBD72Iu0bdVwL1vuhYaJweAdlo.GPp6Zs1Uu20cIpYI3ZBu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 13', 'user-13@example.com', '$2a$10$wOLIVnfJrTBbNsTX/WgseeYDcTbgvw4DMmKLOQvtItPZ6yMJzIpyG',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-13@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 14', 'user-14@example.com', '$2a$10$KtbraEfTagu9jotCqeagietBS3TCRx3iDGrIWBpRjDHRFbcwlSEJu'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 14', 'user-14@example.com', '$2a$10$weg5Ds8x.THzWOxkGLALveyf7lz9jnY0hudvT0Ffov4McCVf9.9hi',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-14@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 15', 'user-15@example.com', '$2a$10$KysR0vOs4NS3P9p9iLU3YOLZyLPRN3iK2e7AIN9jPYmoeoEJKP.gS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 15', 'user-15@example.com', '$2a$10$ercMuXs4xKXdhEH4zeoTyeHGt3VGgfDK5g1g0v.pU3PPDHqzU7hiK',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-15@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 16', 'user-16@example.com', '$2a$10$hTz3umq6PZeZFteKq24zk.YHYaQ4knYMlOYIkj2.POdpyBiKxy5LS'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 16', 'user-16@example.com', '$2a$10$FDEA478QUmiK2ESGys7Ob./CueuE6NqJ2gfz2PxHyGRViTEX0fr3m',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-16@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 17', 'user-17@example.com', '$2a$10$BoA4tRy8fV5U2I0sHYV/w.bn1nbI2TN5/RDKaYPLaM2RYref51uh2'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 17', 'user-17@example.com', '$2a$10$4PijSzvRt/zkuplaqYbp1.Kg/.2659yTccTOhH65zynP.vFG1ZS6m',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-17@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 18', 'user-18@example.com', '$2a$10$u861ojEh.D0zRWthmkELk.JOs5KgN/y4RXdYuDDf7N/IZrKEUP42O'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 18', 'user-18@example.com', '$2a$10$SXOD7fPvClwKo79/ayxQNuzYhcDDyZn4wX79jD2Kum636Itp/r86i',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-18@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 19', 'user-19@example.com', '$2a$10$Lxy6pH/nAQ3zpMq9EXU8FuBH1w8Ku7ThbT0jgX7O5bUAhzLaF0F8q'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 19', 'user-19@example.com', '$2a$10$tK9uZTeJ/sV/3QLY/9q7lO/pflT8c1pMAAms6o/gXGvyni9RpQfOq',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-19@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 20', 'user-20@example.com', '$2a$10$g.vhBsKVOizM573Rz0nQ.OlkbJUQhOXYj8hTxNnJiWN4p6u5bd442'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 20', 'user-20@example.com', '$2a$10$It/HPMcAbX4AUNpkm99ix.7UYR0VzeuSAlMGWhBa25V3e8NAbmz3q',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-20@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 21', 'user-21@example.com', '$2a$10$1JQ9/shjUsSQ5I.oRAgKhejSU96aDFGp3etjbE4OLtJ2e43ZquEva'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 21', 'user-21@example.com', '$2a$10$mT2tdHatrQCIMlFDri8u5OKYnC2uUGE/L2dleDw1m27v1eLbZGTie',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-21@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 22', 'user-22@example.com', '$2a$10$UeLMiPelp1wAbkpOj2m0zuLYhUzYyEt5zvogT0gHqlqFY/9R8gWFG'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 22', 'user-22@example.com', '$2a$10$Gpb7madYA0H0xg0AjpD97u4WS1dxq4KasP7IJR0Jt0CS/eNI9QtGm',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-22@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 23', 'user-23@example.com', '$2a$10$ymXy2xOzGsCS5IrVQgg02.LhVlHSip7nGHpq9WRidyJvJJaJUkYPy'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 23', 'user-23@example.com', '$2a$10$enbVCiFQ3VwqhkoG/fER/eNuUi3u.ph7UoiYmhn2PzaEs/IcVVRdu',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-23@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 24', 'user-24@example.com', '$2a$10$bG6LTDNQp/k8S7TJkINyhOiJjMS2fisBUtxpS/wHLzDh9fv7g7.pC'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 24', 'user-24@example.com', '$2a$10$gQx419xZKEoK.ya.BWlO7u960nRXHDUjrw9akSrcl1UcqSDUS8y8K',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-24@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 25', 'user-25@example.com', '$2a$10$.8KfDsIzs/smXdjJWaSl4ucDrevooWcrbBUm/oo.4/3peyHhS15QO'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 25', 'user-25@example.com', '$2a$10$TEL.mx.Ct3sf3rgfippI6umq74Zy2CPQkhGRpmTsA6x418qwMflN.',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-25@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 26', 'user-26@example.com', '$2a$10$7B0/iv58MnAFAcnX.K4H9e26b8gFIlcsxPlNpWC/APKnI2InVUlla'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 26', 'user-26@example.com', '$2a$10$kdUFSMIcJwrW7eEh4TngqOt8b02rU7l3zDonJHZFaEsj1v34ZQ.RS',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-26@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 27', 'user-27@example.com', '$2a$10$WpcWiqmOgrQQmv77kFckv.q4sIoFUAK8NrgVXf5nF.CxWpHtnzPA6'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 27', 'user-27@example.com', '$2a$10$xSFUOZuZ/VL.6gkjMZ5zYeOWNzeFf9Kk2RCL8aaP7Qchy3zxjQao2',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-27@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 28', 'user-28@example.com', '$2a$10$odQ02ZQJ06eOXJYpZFoHjuBVDABSnO2lBztC/h4TauR.HVqJOd4Ke'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 28', 'user-28@example.com', '$2a$10$qUh/MVapLCqvPw6o3U0Ix.aHJ92YmbOYgHzZc8pM07EYfQpB.RiG6',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-28@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 29', 'user-29@example.com', '$2a$10$blC91C9NWPbWfU2xst3ZDe9S6ZbLHQJTAPz9lflsQgvUthPSr861i'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 29', 'user-29@example.com', '$2a$10$N6ovoDSGx6KCoFOCg4r7ZuobfRRIOjfkfEHHwVVz/hdRDLi15Pb1.',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-29@example.com');
-INSERT INTO "user"(id, name, email, password_digest)
-  SELECT RANDOM_UUID(), 'User 30', 'user-30@example.com', '$2a$10$q3fKzS43kfB1x9NU1uAJBOh4DLgXIXnQ2OkjuNeUVPCSuTL3wBqti'
+INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
+  SELECT RANDOM_UUID(), 'User 30', 'user-30@example.com', '$2a$10$DDff6yG4WIM7w7Q.SCv7LuYQnK3rddTHGomTSdQdbHPtl4sgolEHe',
+    true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-30@example.com');

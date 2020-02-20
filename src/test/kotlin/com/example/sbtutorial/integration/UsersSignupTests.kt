@@ -1,6 +1,8 @@
 package com.example.sbtutorial.integration
 
 import com.example.sbtutorial.BaseTestSetup
+import com.example.sbtutorial.controller.AccountActivationsController
+import com.example.sbtutorial.controller.StaticPagesController
 import com.example.sbtutorial.controller.UsersController
 import com.example.sbtutorial.helper.TestHelper.checkHeaderMenu
 import com.example.sbtutorial.helper.TestHelper.parseHtml
@@ -13,12 +15,15 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.mock.web.MockHttpSession
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.web.util.UriComponentsBuilder
+import com.example.sbtutorial.helper.TestHelper as TH
 
-@WebMvcTest(UsersController::class)
+@WebMvcTest(UsersController::class, StaticPagesController::class, AccountActivationsController::class)
 class UsersSignupTests @Autowired constructor(
     private val mvc: MockMvc,
     private val client: WebClient,
@@ -73,9 +78,12 @@ class UsersSignupTests @Autowired constructor(
             .with(SecurityMockMvcRequestPostProcessors.csrf())
         )
             .andExpect(status().is3xxRedirection)
-            .andExpect(redirectedUrlPattern("/users/*"))
+            .andExpect(redirectedUrl("/"))
             .andExpect(flash().attribute("flash",
-                hasEntry("success", "view.users.show.welcome")))
+                anyOf(
+                    hasEntry("info", "view.users.create.mail.sent"),
+                    hasEntry("warning", "view.users.create.mail.failed")
+                )))
             .andReturn()
 
         assertThat(us.findAll().size).isEqualTo(before + 1)
@@ -86,13 +94,71 @@ class UsersSignupTests @Autowired constructor(
             .session(result.request.session as MockHttpSession)
         ).andExpect(status().isOk).andReturn()
 
-        val showPage = parseHtml(result.response.contentAsString, client)
-        assertThat(showPage.titleText).contains("Example User")
-        assertThat(showPage.getByXPath<HtmlElement>(
-            "/html/body/div/div[@class='alert alert-success']"))
-            .hasSize(1).satisfies {
-                assertThat(it[0].textContent).containsIgnoringCase("welcome")
+        val indexPage = parseHtml(result.response.contentAsString, client)
+        assertThat(indexPage.body).satisfiesAnyOf(
+            fun(body: HtmlElement) {
+                assertThat(body.getByXPath<HtmlElement>("./div/div[@class='alert alert-info']")).hasSize(1)
+                    .satisfies { assertThat(it[0].textContent).contains("activate", "account") }
+            },
+            fun(body: HtmlElement) {
+                assertThat(body.getByXPath<HtmlElement>("./div/div[@class='alert alert-warning']")).hasSize(1)
+                    .satisfies { assertThat(it[0].textContent).contains("activation", "not work") }
             }
-        checkHeaderMenu(showPage, true, addedUser.id)
+        )
+        checkHeaderMenu(indexPage, false, addedUser.id)
+    }
+
+    @Test
+    fun `valid signup information with account activation`() {
+        TH.get(mvc, "/")
+        val before = us.findAll().size
+
+        var result = TH.post(mvc, "/signup", mapOf(
+            "name" to "Example User",
+            "email" to "user@example.com",
+            "password" to "password",
+            "passwordConfirmation" to "password"))
+        val token = result.request.getAttribute("activationToken")
+        assertThat(token).isNotNull
+
+        assertThat(us.findAll().size).isEqualTo(before + 1)
+
+        var found = us.findByEmail("user@example.com")
+        assertThat(found).isNotNull
+        assertThat(found!!.isActivated).isFalse()
+
+        // 有効化していない状態でログインしてみる
+        result = TH.loginAs(mvc, found, false)
+        assertThat(result.request.getAttribute("SPRING_SECURITY_LAST_EXCEPTION"))
+            .isInstanceOf(DisabledException::class.java)
+
+        // 有効化トークンが不正な場合
+        val builder = UriComponentsBuilder.newInstance()
+            .scheme(result.request.scheme).host(result.request.serverName).port(result.request.serverPort)
+            .path("/account_activation/{token}/edit").queryParam("email", "{email}")
+        var uri = builder.build().expand("invalid token", found.email).toUriString()
+
+        result = TH.get(mvc, uri)
+        assertThat(result.response.redirectedUrl).isEqualTo("/")
+        assertThat(result.flashMap.toMap())
+            .containsEntry("flash", mapOf("danger" to "view.account.activations.authenticate.fail"))
+
+        // トークンは正しいがメールアドレスが無効な場合
+        uri = builder.build().expand(token, "wrong").toUriString()
+
+        result = TH.get(mvc, uri)
+        assertThat(result.response.redirectedUrl).isEqualTo("/")
+        assertThat(result.flashMap.toMap())
+            .containsEntry("flash", mapOf("danger" to "view.account.activations.authenticate.fail"))
+
+        // 有効化トークンが正しい場合
+        uri = builder.build().expand(token, found.email).toUriString()
+
+        result = TH.get(mvc, uri)
+        assertThat(result.response.redirectedUrl).isEqualTo("/login")
+        assertThat(result.flashMap.toMap())
+            .containsEntry("flash", mapOf("success" to "view.account.activations.authenticate.success"))
+        found = us.findByEmail(found.email)
+        assertThat(found).isNotNull.extracting("activated").isEqualTo(true)
     }
 }

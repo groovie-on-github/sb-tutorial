@@ -11,13 +11,14 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Duration
 
 @Configuration // 設定を行うクラスであることを宣言するアノテーション
 @EnableWebSecurity // Spring Securityを有効にする為のアノテーション
 class WebSecurityConfig(private val authProperties: AuthProperties,
-                        private val accountService: AccountService): WebSecurityConfigurerAdapter() {
+                        private val accountService: AccountService,
+                        private val passwordEncoder: PasswordEncoder): WebSecurityConfigurerAdapter() {
 
     private val log = LogFactory.getLog(WebSecurityConfig::class.java)
 
@@ -38,6 +39,9 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
                 .mvcMatchers(HttpMethod.GET, "/users/{id}/*").access("isAuthenticated() and principal.id.toString() == #id")
                 .mvcMatchers(HttpMethod.POST, "/users/{id}").access("isAuthenticated() and principal.id.toString() == #id")
                 .mvcMatchers(HttpMethod.POST, "/users/{id}/delete").access("isAuthenticated() and hasRole('ADMIN')")
+
+                // activation
+                .mvcMatchers(HttpMethod.GET, "/account_activation/{token}/edit").permitAll()
 
                 // ルート直下のアクセスは許可する
                 .mvcMatchers("/*").permitAll()
@@ -79,19 +83,15 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         log.debug("#configure(AuthenticationManagerBuilder) called!!")
-        val passwordEncoder = passwordEncoder()
         auth.userDetailsService(accountService).passwordEncoder(passwordEncoder)
 
         val admin = authProperties.admin
         log.debug(">> $admin")
-        accountService.registerAdmin(admin, passwordEncoder)
+        accountService.registerAdmin(admin)
     }
 
     @Bean
     override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
     }
-
-    @Bean
-    fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 }

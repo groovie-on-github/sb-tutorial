@@ -24,7 +24,8 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @BeforeEach
     fun setUp() {
-        userForm = UserForm("Example User", "user@example.com", "foobar", "foobar", pe)
+        userForm = UserForm("Example User", "user@example.com", "foobar", "foobar")
+            .apply { passwordDigest = pe.encode(password) }
         user = User()
     }
 
@@ -200,11 +201,6 @@ class UserTests(@Autowired private val em: TestEntityManager) {
             assertThat(it.messageTemplate)
                 .isEqualTo("{user.passwordConfirmation.PasswordConfirm}")
         }
-
-        assertThatThrownBy {
-            em.persistAndFlush(userForm.populate(user))
-            fail<String>("PersistenceException expected")
-        }.isInstanceOf(PersistenceException::class.java)
     }
 
     @Test
@@ -220,15 +216,23 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `#equals and #hashcode`() {
-        assertThat(userForm).isEqualTo(UserForm("Example User", "user@example.com", "foobar", "foobar", pe))
-
-        userForm.populate(user)
-        // パスワードダイジェストはpopulateするたびに変わるので一致しない
-        assertThat(user).isNotEqualTo(userForm.populate(User()))
-        assertThat(user.hashCode()).isNotEqualTo(userForm.populate(User()).hashCode())
-
+        // 登録前なら一致する
         val user2 = User("user2", "user2@example.com")
         assertThat(user2).isEqualTo(User("user2", "user2@example.com"))
         assertThat(user2.hashCode()).isEqualTo(User("user2", "user2@example.com").hashCode())
+
+        // 登録後は一致しない
+        UserForm.from(user2)
+            .apply { password = "password"; passwordConfirmation = "password"; passwordDigest = pe.encode(password) }
+            .populate(user2)
+        em.persistAndFlush(user2)
+        assertThat(user2).isNotEqualTo(User("user2", "user2@example.com"))
+        assertThat(user2.hashCode()).isNotEqualTo(User("user2", "user2@example.com").hashCode())
+
+
+        userForm.populate(user)
+        em.persistAndFlush(user)
+        // 同一のユーザーから作られたUserFormは一致する
+        assertThat(UserForm.from(user)).isEqualTo(UserForm.from(user))
     }
 }

@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TutorialApplication
 
 fun main(args: Array<String>) {
-	runApplication<TutorialApplication>(*args)//.also { it.beanDefinitionNames.sorted().forEach(::println) }
+	runApplication<TutorialApplication>(*args).also { it.beanDefinitionNames.sorted().forEach(::println) }
 }

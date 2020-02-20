@@ -2,6 +2,7 @@ package com.example.sbtutorial.model.user
 
 import com.example.sbtutorial.model.BaseEntity
 import org.hibernate.annotations.ColumnDefault
+import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -39,11 +40,25 @@ class User(name: String = "", email: String = ""): BaseEntity() {
     final var isAdmin: Boolean = false
         private set
 
+    @ColumnDefault("false")
+    final var isActivated: Boolean = false
+
+    var activationDigest: String? = null
+
+    var activatedAt: Date? = null
+
 
     @PrePersist
     @PreUpdate
     private fun OnPrePersistOrUpdate() {
         email = email.toLowerCase()
+    }
+
+
+    override fun toString(): String {
+        return super.toString().format("User",
+            "name='$name', email='$email', passwordDigest='[PROTECTED]', isAdmin='[PROTECTED]', " +
+                "isActivated=$isActivated, activationDigest='$activationDigest', activatedAt=$activatedAt")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -55,6 +70,9 @@ class User(name: String = "", email: String = ""): BaseEntity() {
         if (email != other.email) return false
         if (passwordDigest != other.passwordDigest) return false
         if (isAdmin != other.isAdmin) return false
+        if (isActivated != other.isActivated) return false
+        if (activationDigest != other.activationDigest) return false
+        if (activatedAt != other.activatedAt) return false
 
         return true
     }
@@ -65,11 +83,9 @@ class User(name: String = "", email: String = ""): BaseEntity() {
         result = 31 * result + email.hashCode()
         result = 31 * result + (passwordDigest?.hashCode() ?: 0)
         result = 31 * result + isAdmin.hashCode()
+        result = 31 * result + isActivated.hashCode()
+        result = 31 * result + (activationDigest?.hashCode() ?: 0)
+        result = 31 * result + (activatedAt?.hashCode() ?: 0)
         return result
-    }
-
-    override fun toString(): String {
-        return super.toString().format("User",
-            "name='$name', email='$email', passwordDigest='[PROTECTED]', isAdmin='[PROTECTED]'")
     }
 }

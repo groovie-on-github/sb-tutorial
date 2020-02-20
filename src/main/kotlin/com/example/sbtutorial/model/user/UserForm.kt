@@ -3,23 +3,21 @@ package com.example.sbtutorial.model.user
 import com.example.sbtutorial.model.IHavePassword
 import com.example.sbtutorial.model.UpdateGroup
 import com.example.sbtutorial.validation.PasswordConfirm
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 import javax.validation.constraints.*
 import javax.validation.groups.Default
 
 @PasswordConfirm(message = "{user.passwordConfirmation.PasswordConfirm}",
                  groups = [Default::class, UpdateGroup::class])
-class UserForm(name: String = "", email: String = "",
-               password: String = "", passwordConfirmation: String = "",
-               private val passwordEncoder: PasswordEncoder): IHavePassword {
+class UserForm(name: String = "", email: String = "", password: String = "",
+               passwordConfirmation: String = "", id: UUID? = null): IHavePassword {
 
     companion object {
-        fun from(user: User, passwordEncoder: PasswordEncoder): UserForm =
-            UserForm(user.name, user.email, passwordEncoder = passwordEncoder) .apply { this.id = user.id }
+        fun from(user: User): UserForm =
+            UserForm(user.name, user.email, id = user.id)
     }
 
-    var id: UUID? = null
+    var id: UUID? = id
         private set
 
     @NotBlank(message = "{user.name.NotBlank}", groups = [Default::class, UpdateGroup::class])
@@ -42,17 +40,33 @@ class UserForm(name: String = "", email: String = "",
 
     override var passwordConfirmation: String? = passwordConfirmation
 
+    var passwordDigest: String = ""
+        set(value) {
+            if(!canAcceptPasswordDigest()) throw IllegalStateException("invalid password")
+
+            field = value
+        }
+
+    var activationToken: String = ""
+
+    var activationDigest: String = ""
+        set(value) {
+            if(activationToken.isBlank()) throw IllegalStateException("invalid activationToken")
+
+            field = value
+        }
 
     fun populate(user: User): User {
         user.name = name!!
         user.email = email!!
-
-        if(password != null && password!!.length >= User.PASSWORD_LENGTH_MIN && password == passwordConfirmation) {
-            user.passwordDigest = passwordEncoder.encode(password!!)
-        }
+        if(passwordDigest.isNotBlank()) user.passwordDigest = passwordDigest
+        if(activationDigest.isNotBlank()) user.activationDigest = activationDigest
 
         return user
     }
+
+    fun canAcceptPasswordDigest(): Boolean = password != null && password!!.length >= User.PASSWORD_LENGTH_MIN
+                                                && password == passwordConfirmation
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -63,6 +77,7 @@ class UserForm(name: String = "", email: String = "",
         if (email != other.email) return false
         if (password != other.password) return false
         if (passwordConfirmation != other.passwordConfirmation) return false
+        if (activationToken != other.activationToken) return false
 
         return true
     }
@@ -73,10 +88,12 @@ class UserForm(name: String = "", email: String = "",
         result = 31 * result + (email?.hashCode() ?: 0)
         result = 31 * result + (password?.hashCode() ?: 0)
         result = 31 * result + (passwordConfirmation?.hashCode() ?: 0)
+        result = 31 * result + activationToken.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "UserForm(id=$id, name=$name, email=$email, password=[PROTECTED], passwordConfirmation=[PROTECTED])"
+        return "UserForm(id=$id, name='$name', email='$email', password='[PROTECTED]', " +
+               "passwordConfirmation='[PROTECTED]', activationToken='[PROTECTED]')"
     }
 }
