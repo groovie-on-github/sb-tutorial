@@ -246,10 +246,10 @@ class UsersLoginTests @Autowired constructor(
             }
 
         // 別ユーザーで非永続ログイン
-        val user2 = UserForm("test user2", "user2@example.com", "password", "password")
-            .apply { passwordDigest = us.digest(password!!) }
-            .populate(User()).apply { isActivated = true }
-        us.save(user2)
+        val userForm = UserForm(us).apply {
+            name = "test user2"; email = "user2@example.com"; password = "password"; passwordConfirmation = "password"
+        }.also { it.save() }
+        val user2 = us.findById(userForm.id!!)!!.apply { isActivated = true }
 
         result = TH.loginAs(mvc, user2, false, null, *(loginCookie))
         result = TH.post(mvc, result.response.forwardedUrl!!, emptyMap(),

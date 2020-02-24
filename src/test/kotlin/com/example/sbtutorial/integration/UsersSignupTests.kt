@@ -6,6 +6,8 @@ import com.example.sbtutorial.controller.StaticPagesController
 import com.example.sbtutorial.controller.UsersController
 import com.example.sbtutorial.helper.TestHelper.checkHeaderMenu
 import com.example.sbtutorial.helper.TestHelper.parseHtml
+import com.example.sbtutorial.model.user.AuthenticationType
+import com.example.sbtutorial.model.user.UserForm
 import com.example.sbtutorial.model.user.UsersService
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlElement
@@ -102,7 +104,7 @@ class UsersSignupTests @Autowired constructor(
             },
             fun(body: HtmlElement) {
                 assertThat(body.getByXPath<HtmlElement>("./div/div[@class='alert alert-warning']")).hasSize(1)
-                    .satisfies { assertThat(it[0].textContent).contains("activation", "not work") }
+                    .satisfies { assertThat(it[0].textContent).contains("e-mail", "not work") }
             }
         )
         checkHeaderMenu(indexPage, false, addedUser.id)
@@ -118,14 +120,18 @@ class UsersSignupTests @Autowired constructor(
             "email" to "user@example.com",
             "password" to "password",
             "passwordConfirmation" to "password"))
-        val token = result.request.getAttribute("activationToken")
-        assertThat(token).isNotNull
 
         assertThat(us.findAll().size).isEqualTo(before + 1)
 
         var found = us.findByEmail("user@example.com")
         assertThat(found).isNotNull
         assertThat(found!!.isActivated).isFalse()
+
+        val activationUrl = UserForm(us, found).apply { createActivationToken(); save() }
+            .authenticationUrl(AuthenticationType.ACTIVATION, UriComponentsBuilder.newInstance()
+                .scheme(result.request.scheme).host(result.request.serverName).port(result.request.serverPort))
+        val token = Regex("""account_activation/(\w+)/edit""").find(activationUrl)?.groupValues?.get(1)
+        assertThat(token).isNotNull()
 
         // 有効化していない状態でログインしてみる
         result = TH.loginAs(mvc, found, false)
@@ -141,7 +147,7 @@ class UsersSignupTests @Autowired constructor(
         result = TH.get(mvc, uri)
         assertThat(result.response.redirectedUrl).isEqualTo("/")
         assertThat(result.flashMap.toMap())
-            .containsEntry("flash", mapOf("danger" to "view.account.activations.authenticate.fail"))
+            .containsEntry("flash", mapOf("danger" to "view.account-activations.authenticate.fail"))
 
         // トークンは正しいがメールアドレスが無効な場合
         uri = builder.build().expand(token, "wrong").toUriString()
@@ -149,7 +155,7 @@ class UsersSignupTests @Autowired constructor(
         result = TH.get(mvc, uri)
         assertThat(result.response.redirectedUrl).isEqualTo("/")
         assertThat(result.flashMap.toMap())
-            .containsEntry("flash", mapOf("danger" to "view.account.activations.authenticate.fail"))
+            .containsEntry("flash", mapOf("danger" to "view.account-activations.authenticate.fail"))
 
         // 有効化トークンが正しい場合
         uri = builder.build().expand(token, found.email).toUriString()
@@ -157,7 +163,7 @@ class UsersSignupTests @Autowired constructor(
         result = TH.get(mvc, uri)
         assertThat(result.response.redirectedUrl).isEqualTo("/login")
         assertThat(result.flashMap.toMap())
-            .containsEntry("flash", mapOf("success" to "view.account.activations.authenticate.success"))
+            .containsEntry("flash", mapOf("success" to "view.account-activations.authenticate.success"))
         found = us.findByEmail(found.email)
         assertThat(found).isNotNull.extracting("activated").isEqualTo(true)
     }

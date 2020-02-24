@@ -4,7 +4,7 @@ import com.example.sbtutorial.helper.SessionsHelper
 import com.example.sbtutorial.mail.MailSenderService
 import com.example.sbtutorial.mail.SendFailedException
 import com.example.sbtutorial.model.UpdateGroup
-import com.example.sbtutorial.model.user.User
+import com.example.sbtutorial.model.user.AuthenticationType.ACTIVATION
 import com.example.sbtutorial.model.user.UserForm
 import com.example.sbtutorial.model.user.UsersService
 import org.apache.commons.logging.LogFactory
@@ -56,7 +56,7 @@ class UsersController(private val us: UsersService,
         log.debug("#modelUserForm($id) called!!")
         val user = if(id != null) us.findActivatedById(id) else null
         log.debug(">> user => $user")
-        return if(user == null) UserForm() else UserForm.from(user)
+        return UserForm(us, user)
     }
 
 
@@ -121,10 +121,8 @@ class UsersController(private val us: UsersService,
             mav.model[TITLE_KEY] = TITLE_KEY_NEW
 
         } else {
-            userForm.activationToken = us.newToken()
-            userForm.activationDigest = us.digest(userForm.activationToken)
-            userForm.passwordDigest = us.digest(userForm.password!!)
-            val saved = us.save(userForm.populate(User()))
+            userForm.createActivationToken()
+            userForm.save()
             log.debug(">> create succeeded!!")
 /*
             // ログイン処理を行う
@@ -136,22 +134,20 @@ class UsersController(private val us: UsersService,
             redirect.addFlashAttribute("flash",
                 mapOf("success" to "view.users.show.welcome"))
 */
-            val activationUrl = UriComponentsBuilder.newInstance()
-                .scheme(request.scheme).host(request.serverName)//.port(request.serverPort)
-                .path("/account_activation/${userForm.activationToken}/edit")
-                .queryParam("email", "{email}").build(saved.email).toString()
+            val activationUrl = userForm.authenticationUrl(ACTIVATION,
+                    UriComponentsBuilder.newInstance().scheme(request.scheme).host(request.serverName)
+                        .apply { if(log.isDebugEnabled) port(request.serverPort) }
+            )
 
-            val params = mapOf("name" to saved.name, "url" to activationUrl)
+            val params = mapOf("name" to userForm.name!!, "url" to activationUrl)
 
             try {
-                ms.accountActivation(saved.email, params)
+                ms.accountActivation(userForm.email!!, params, request.locale)
                 redirect.addFlashAttribute("flash", mapOf("info" to "view.users.create.mail.sent"))
 
             } catch(e: SendFailedException) {
                 log.warn(">>")
                 log.warn(e.text)
-                // test用
-                if(log.isDebugEnabled) { request.setAttribute("activationToken", userForm.activationToken) }
 
                 redirect.addFlashAttribute("flash", mapOf("warning" to "view.users.create.mail.failed"))
             }
@@ -177,7 +173,6 @@ class UsersController(private val us: UsersService,
     @PostMapping("/$BASE_PATH/{id}")
     fun update(@Validated(UpdateGroup::class) @ModelAttribute("userForm") userForm: UserForm,
                result: BindingResult,
-               @PathVariable("id") user: User,
                redirect: RedirectAttributes,
                sessionsHelper: SessionsHelper,
                mav: ModelAndView): ModelAndView {
@@ -195,11 +190,10 @@ class UsersController(private val us: UsersService,
             mav.model[TITLE_KEY] = TITLE_KEY_EDIT
 
         } else {
-            if(userForm.canAcceptPasswordDigest()) userForm.passwordDigest = us.digest(userForm.password!!)
-            us.save(userForm.populate(user))
+            userForm.save()
             log.debug(">> update succeeded!!")
 
-            mav.viewName = "redirect:/$BASE_PATH/${user.id}"
+            mav.viewName = "redirect:/$BASE_PATH/${userForm.id}"
             redirect.addFlashAttribute("flash",
                 mapOf("success" to "view.users.edit.updated"))
         }
@@ -209,16 +203,16 @@ class UsersController(private val us: UsersService,
     }
 
     @PostMapping("/$BASE_PATH/{id}/delete")
-    fun destroy(@PathVariable("id") user: User,
+    fun destroy(@ModelAttribute("userForm") userForm: UserForm,
                 redirect: RedirectAttributes,
                 mav: ModelAndView): ModelAndView {
         log.debug("#destroy called!!")
 
-        us.delete(user)
+        userForm.delete()
 
         mav.viewName = "redirect:/$BASE_PATH"
         redirect.addFlashAttribute("flash", mapOf("success" to "view.users.delete.success"))
-        redirect.addFlashAttribute("flashArg", user.name)
+        redirect.addFlashAttribute("flashArg", userForm.name)
 
         log.debug(">> $mav")
         return mav
@@ -228,8 +222,7 @@ class UsersController(private val us: UsersService,
     private fun validateEmailExistence(email: String, result: BindingResult): Boolean {
         return (us.findByEmail(email.toLowerCase()) == null).also {
             if(!it) {
-                result.rejectValue("email", "user.email.Used",
-                    arrayOf(email), "Email is already used")
+                result.rejectValue("email", "user.email.Used", arrayOf(email), "Email is already used")
             }
         }
     }

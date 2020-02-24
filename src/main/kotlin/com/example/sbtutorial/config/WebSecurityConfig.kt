@@ -43,6 +43,9 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
                 // activation
                 .mvcMatchers(HttpMethod.GET, "/account_activation/{token}/edit").permitAll()
 
+                // password reset
+                .mvcMatchers("/password_resets/**").permitAll()
+
                 // ルート直下のアクセスは許可する
                 .mvcMatchers("/*").permitAll()
 

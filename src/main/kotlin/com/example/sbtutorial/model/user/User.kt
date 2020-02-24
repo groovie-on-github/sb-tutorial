@@ -41,12 +41,15 @@ class User(name: String = "", email: String = ""): BaseEntity() {
         private set
 
     @ColumnDefault("false")
-    final var isActivated: Boolean = false
+    var isActivated: Boolean = false
 
     var activationDigest: String? = null
 
     var activatedAt: Date? = null
 
+    var resetDigest: String? = null
+
+    var resetSentAt: Date? = null
 
     @PrePersist
     @PreUpdate
@@ -57,8 +60,9 @@ class User(name: String = "", email: String = ""): BaseEntity() {
 
     override fun toString(): String {
         return super.toString().format("User",
-            "name='$name', email='$email', passwordDigest='[PROTECTED]', isAdmin='[PROTECTED]', " +
-                "isActivated=$isActivated, activationDigest='$activationDigest', activatedAt=$activatedAt")
+            "name='$name', email='$email', passwordDigest='$passwordDigest', isAdmin='[PROTECTED]', " +
+                "isActivated=$isActivated, activationDigest='$activationDigest', activatedAt=$activatedAt, " +
+                "resetDigest='$resetDigest', resetSentAt=$resetSentAt")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -73,6 +77,8 @@ class User(name: String = "", email: String = ""): BaseEntity() {
         if (isActivated != other.isActivated) return false
         if (activationDigest != other.activationDigest) return false
         if (activatedAt != other.activatedAt) return false
+        if (resetDigest != other.resetDigest) return false
+        if (resetSentAt != other.resetSentAt) return false
 
         return true
     }
@@ -86,6 +92,8 @@ class User(name: String = "", email: String = ""): BaseEntity() {
         result = 31 * result + isActivated.hashCode()
         result = 31 * result + (activationDigest?.hashCode() ?: 0)
         result = 31 * result + (activatedAt?.hashCode() ?: 0)
+        result = 31 * result + (resetDigest?.hashCode() ?: 0)
+        result = 31 * result + (resetSentAt?.hashCode() ?: 0)
         return result
     }
 }

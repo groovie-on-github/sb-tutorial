@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.web.util.UriComponentsBuilder
-import org.thymeleaf.context.Context
+import java.util.*
 import com.example.sbtutorial.helper.TestHelper as TH
 
 @SpringBootTest
@@ -26,7 +26,7 @@ class MailSenderServiceTests @Autowired constructor(
         val params = mapOf("name" to "user name", "url" to url)
 
         try {
-            mailSenderService.accountActivation("user@example.com", params)
+            mailSenderService.accountActivation("user@example.com", params, Locale.US)
             fail<String>("expect some exception")
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(SendFailedException::class.java)

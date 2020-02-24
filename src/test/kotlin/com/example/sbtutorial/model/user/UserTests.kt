@@ -1,8 +1,12 @@
 package com.example.sbtutorial.model.user
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.slot
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.AdditionalAnswers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
@@ -14,6 +18,9 @@ import javax.validation.Validation
 @DataJpaTest
 class UserTests(@Autowired private val em: TestEntityManager) {
 
+    @MockkBean
+    private lateinit var us: UsersService
+
     private val pe: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     private lateinit var userForm: UserForm
@@ -24,9 +31,13 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @BeforeEach
     fun setUp() {
-        userForm = UserForm("Example User", "user@example.com", "foobar", "foobar")
-            .apply { passwordDigest = pe.encode(password) }
         user = User()
+        userForm = UserForm(us, user).apply {
+            name = "Example User"; email = "user@example.com"; password = "foobar"; passwordConfirmation = "foobar"
+        }
+
+        every { us.save(any()) } answers { em.persistAndFlush(firstArg()) }
+        every { us.digest(any()) } answers { pe.encode(firstArg())}
     }
 
 
@@ -35,7 +46,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         val result = validator.validate(userForm)
         assertThat(result).isEmpty()
 
-        em.persistAndFlush(userForm.populate(user))
+        userForm.save()
     }
 
     @Test
@@ -47,10 +58,15 @@ class UserTests(@Autowired private val em: TestEntityManager) {
             assertThat(it.messageTemplate).isEqualTo("{user.name.NotBlank}")
         }
 
-        val result2 = validator.validate(userForm.populate(user))
-        assertThat(result2).isNotEmpty.anySatisfy {
-            assertThat(it.propertyPath.toString()).isEqualTo("name")
-            assertThat(it.messageTemplate).isEqualTo("{user.name.NotBlank}")
+        try {
+            userForm.save()
+            fail<String>("ConstraintViolationException expected")
+
+        } catch (e: ConstraintViolationException) {
+            assertThat(e.constraintViolations).anySatisfy {
+                assertThat(it.propertyPath.toString()).isEqualTo("name")
+                assertThat(it.messageTemplate).isEqualTo("{user.name.NotBlank}")
+            }
         }
     }
 
@@ -63,10 +79,15 @@ class UserTests(@Autowired private val em: TestEntityManager) {
             assertThat(it.messageTemplate).isEqualTo("{user.email.NotBlank}")
         }
 
-        val result2 = validator.validate(userForm.populate(user))
-        assertThat(result2).isNotEmpty.anySatisfy {
-            assertThat(it.propertyPath.toString()).isEqualTo("email")
-            assertThat(it.messageTemplate).isEqualTo("{user.email.NotBlank}")
+        try {
+            userForm.save()
+            fail<String>("ConstraintViolationException expected")
+
+        } catch (e: ConstraintViolationException) {
+            assertThat(e.constraintViolations).anySatisfy {
+                assertThat(it.propertyPath.toString()).isEqualTo("email")
+                assertThat(it.messageTemplate).isEqualTo("{user.email.NotBlank}")
+            }
         }
     }
 
@@ -80,7 +101,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         }
 
         try {
-            em.persistAndFlush(userForm.populate(user))
+            userForm.save()
             fail<String>("ConstraintViolationException expected")
 
         } catch(e: ConstraintViolationException) {
@@ -101,7 +122,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         }
 
         try {
-            em.persistAndFlush(userForm.populate(user))
+            userForm.save()
             fail<String>("ConstraintViolationException expected")
 
         } catch(e: ConstraintViolationException) {
@@ -121,7 +142,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
             val result = validator.validate(userForm)
             assertThat(result).isEmpty()
 
-            em.persistAndFlush(userForm.populate(user))
+            userForm.save()
         }
     }
 
@@ -138,7 +159,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
             }
 
             try {
-                em.persistAndFlush(userForm.populate(user))
+                userForm.save()
                 fail<String>("ConstraintViolationException expected")
 
             } catch (e: ConstraintViolationException) {
@@ -152,20 +173,22 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `email addresses should be unique`() {
-        em.persistAndFlush(userForm.populate(user))
-        val duplicateUser = userForm.populate(User())
+        userForm.save()
+
+        val duplicateUserForm = UserForm(us, User()).apply {
+            name = "Example User(duplicate)"; email = "user@example.com"
+            password = "foobar"; passwordConfirmation = "foobar"
+        }
         assertThatThrownBy {
-            em.persistAndFlush(duplicateUser)
+            duplicateUserForm.save()
             fail<String>("PersistenceException expected")
         }.isInstanceOf(PersistenceException::class.java)
     }
 
     @Test
     fun `email addresses should be saved as lower-case`() {
-        userForm.populate(user)
         val mixedCaseEmail = "Foo@ExAMPle.CoM"
-        user.email = mixedCaseEmail
-        em.persistAndFlush(user)
+        userForm.apply { email = mixedCaseEmail }.save()
         em.refresh(user)
         assertThat(user.email).isEqualTo(mixedCaseEmail.toLowerCase())
     }
@@ -205,13 +228,8 @@ class UserTests(@Autowired private val em: TestEntityManager) {
 
     @Test
     fun `#toString`() {
-        userForm.populate(user)
-        for(i in 1..2) {
-            assertThat(user.toString()).startsWith("User(")
-                .contains(user.name, user.email)
-                .doesNotContain(user.passwordDigest)
-            em.persistAndFlush(user)
-        }
+        assertThat(user.toString()).startsWith("User(")
+            .contains(user.name, user.email)
     }
 
     @Test
@@ -222,17 +240,14 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         assertThat(user2.hashCode()).isEqualTo(User("user2", "user2@example.com").hashCode())
 
         // 登録後は一致しない
-        UserForm.from(user2)
-            .apply { password = "password"; passwordConfirmation = "password"; passwordDigest = pe.encode(password) }
-            .populate(user2)
-        em.persistAndFlush(user2)
+        UserForm(us, user2)
+            .apply { password = "password"; passwordConfirmation = "password"; save() }
         assertThat(user2).isNotEqualTo(User("user2", "user2@example.com"))
         assertThat(user2.hashCode()).isNotEqualTo(User("user2", "user2@example.com").hashCode())
 
 
-        userForm.populate(user)
-        em.persistAndFlush(user)
         // 同一のユーザーから作られたUserFormは一致する
-        assertThat(UserForm.from(user)).isEqualTo(UserForm.from(user))
+        userForm.save()
+        assertThat(UserForm(us, user)).isEqualTo(UserForm(us, user))
     }
 }

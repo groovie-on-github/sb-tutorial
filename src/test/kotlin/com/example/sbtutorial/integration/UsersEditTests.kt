@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebMvcTest(UsersController::class, ErrorHandleController::class, SessionsController::class)
 class UsersEditTests @Autowired constructor(private val us: UsersService,
-    private val mvc: MockMvc, private val client: WebClient): BaseTestSetup(client) {
+                                            private val mvc: MockMvc, private val client: WebClient): BaseTestSetup(client) {
 
     private lateinit var user: User
     private lateinit var otherUser: User
