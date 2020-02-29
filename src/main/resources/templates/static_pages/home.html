@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Home</title>
+</head>
+<body>
+<th:block th:fragment="content" th:with="loggedIn = ${@sessionsHelper.loggedIn}">
+  <div th:replace="static_pages/_home_logged_in"></div>
+  <div th:replace="static_pages/_home_welcome"></div>
+</th:block>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <nav class="pagination-fragment" th:if="${page.totalPages > 0 && page.number < page.totalPages}"
-     th:fragment="pagination(page)">
+     th:fragment="pagination(page, basePath)">
   <ul class="pagination">
 <!--/*ページの範囲を固定するパターン*/-->
     <th:block th:with="max = ${paginationMax ?: 10},
@@ -22,7 +22,7 @@
     <li id="paginationBack" class="page-item" th:classappend="${isFirstPage} ? 'disabled'"
         th:with="isFirstPage = ${current < max}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${(start - max) < 0 ? 0 : (start - max)}
+         th:href="@{${basePath}(page=${(start - max) < 0 ? 0 : (start - max)}
                   __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isFirstPage}">&larr;</a>
       <span class="page-link" th:if="${isFirstPage}">&larr;</span>
@@ -32,7 +32,7 @@
     <li id="paginationBack" class="page-item" th:classappend="${isFirstPage} ? 'disabled'"
         th:with="isFirstPage = ${current < max}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${(current - max) < 0 ? 0 : (current - max)}
+         th:href="@{${basePath}(page=${(current - max) < 0 ? 0 : (current - max)}
                   __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isFirstPage}">&larr;</a>
       <span class="page-link" th:if="${isFirstPage}">&larr;</span>
@@ -41,21 +41,21 @@
     <li id="paginationPrev" class="page-item" th:classappend="${isFirst} ? 'disabled'"
         th:with="isFirst = ${page.first}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${current - 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:href="@{${basePath}(page=${current - 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isFirst}">&laquo;</a>
       <span class="page-link" th:if="${isFirst}">&laquo;</span>
     </li>
     <li class="page-item" th:each="i : ${#numbers.sequence(start, end - 1)}"
         th:classappend="${isCurrent} ? 'active'" th:with="isCurrent = ${i == current}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${i} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:href="@{${basePath}(page=${i} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:text="${i + 1}" th:unless="${isCurrent}">page number</a>
       <span class="page-link" th:text="${i + 1}" th:if="${isCurrent}">page number</span>
     </li>
     <li id="paginationNext" class="page-item" th:classappend="${isLast} ? 'disabled'"
         th:with="isLast = ${page.last}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${current + 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
+         th:href="@{${basePath}(page=${current + 1} __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isLast}">&raquo;</a>
       <span class="page-link" th:if="${isLast}">&raquo;</span>
     </li>
@@ -63,7 +63,7 @@
     <li id="paginationForward" class="page-item" th:classappend="${isLastPage} ? 'disabled'"
         th:with="isLastPage = ${end >= totalPages}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${(start + max) > lastIndex ? lastIndex : (start + max)}
+         th:href="@{${basePath}(page=${(start + max) > lastIndex ? lastIndex : (start + max)}
                   __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isLastPage}">&rarr;</a>
       <span class="page-link" th:if="${isLastPage}">&rarr;</span>
@@ -73,7 +73,7 @@
     <li id="paginationForward" class="page-item" th:classappend="${isLastPage} ? 'disabled'"
         th:with="isLastPage = ${current > (lastIndex - max)}">
       <a class="page-link" href="#"
-         th:href="@{/users(page=${(current + max) > lastIndex ? lastIndex : (current + max)}
+         th:href="@{${basePath}(page=${(current + max) > lastIndex ? lastIndex : (current + max)}
                   __${pageSize != null ? ', size=${pageSize}' : ''}__)}"
          th:unless="${isLastPage}">&rarr;</a>
       <span class="page-link" th:if="${isLastPage}">&rarr;</span>

@@ -7,20 +7,13 @@
 <th:block th:fragment="content">
   <h1 th:text="#{view.users.index.heading}">All users</h1>
 
-  <th:block th:replace="users/_pagination(${users})"></th:block>
+  <th:block th:replace="shared/_pagination(${users}, '/users')"></th:block>
 
   <ul class="users">
-    <li th:each="user : ${users.content}" th:object="${user}">
-      <img th:replace="shared/_gravatar">
-      <a href="#" th:href="@{/users/{id}(id = *{id})}" th:text="*{name}">user.name</a>
-      <th:block th:if="${@sessionsHelper.admin && !@sessionsHelper.isCurrentUser(user.email)}">
-       | <button class="btn btn-link border-0 p-0 del-btn" form="deleteForm" formaction="#"
-                 th:formaction="@{/users/{id}/delete(id = *{id})}" th:text="#{view.users.index.delete}">delete</button>
-      </th:block>
-    </li>
+    <li th:replace="users/_user"></li>
   </ul>
 
-  <th:block th:replace="users/_pagination(${users})"></th:block>
+  <th:block th:replace="shared/_pagination(${users}, '/users')"></th:block>
 
   <form id="deleteForm" action="#" th:action="@{#}" method="post"></form>
   <script>

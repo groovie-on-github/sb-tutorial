@@ -1,6 +1,7 @@
 package com.example.sbtutorial.model.user
 
 import com.example.sbtutorial.model.BaseEntity
+import com.example.sbtutorial.model.micropost.Micropost
 import org.hibernate.annotations.ColumnDefault
 import java.util.*
 import javax.persistence.*
@@ -50,6 +51,11 @@ class User(name: String = "", email: String = ""): BaseEntity() {
     var resetDigest: String? = null
 
     var resetSentAt: Date? = null
+
+    @OrderBy("createdAt DESC")
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "user")
+    val micropostList: MutableList<Micropost> = mutableListOf()
+
 
     @PrePersist
     @PreUpdate

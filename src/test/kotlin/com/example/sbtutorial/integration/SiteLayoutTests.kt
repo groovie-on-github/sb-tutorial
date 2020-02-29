@@ -46,13 +46,13 @@ class SiteLayoutTests @Autowired constructor(private val mvc: MockMvc,
             xPath.format("/users"))).hasSize(0)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//a[starts-with(@href, '/users/') and not(contains(@href, '/edit'))]")).hasSize(0)
+            "//header[@id='layoutsHeader']//a[starts-with(@href, '/users/') and not(contains(@href, '/edit'))]")).hasSize(0)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//a[starts-with(@href, '/users/') and contains(@href, '/edit')]")).hasSize(0)
+            "//header[@id='layoutsHeader']//a[starts-with(@href, '/users/') and contains(@href, '/edit')]")).hasSize(0)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//form[@action='/logout' and @method='post']")).hasSize(0)
+            "//header[@id='layoutsHeader']//form[@action='/logout' and @method='post']")).hasSize(0)
 
         page = client.getPage("/contact")
         assertThat(page.titleText).isEqualTo(getFullTitle("Contact"))
@@ -82,13 +82,13 @@ class SiteLayoutTests @Autowired constructor(private val mvc: MockMvc,
             xPath.format("/users"))).hasSize(1)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//a[starts-with(@href, '/users/') and not(contains(@href, '/edit'))]")).hasSize(1)
+            "//header//a[starts-with(@href, '/users/') and not(contains(@href, '/edit'))]")).hasSize(1)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//a[starts-with(@href, '/users/') and contains(@href, '/edit')]")).hasSize(1)
+            "//header[@id='layoutsHeader']//a[starts-with(@href, '/users/') and contains(@href, '/edit')]")).hasSize(1)
 
         assertThat(page.getByXPath<HtmlElement>(
-            "//form[@action='/logout' and @method='post']")).hasSize(1)
+            "//header[@id='layoutsHeader']//form[@action='/logout' and @method='post']")).hasSize(1)
     }
 
     @Test

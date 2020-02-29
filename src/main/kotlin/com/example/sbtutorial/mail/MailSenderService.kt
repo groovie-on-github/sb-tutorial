@@ -86,6 +86,3 @@ class MailSenderService(private val mailSender: JavaMailSender) {
 	}
 
 }
-
-class SendFailedException(val msg: String, val mail: MimeMessage,
-						  val text: String, val html: String, val e: Exception): Exception(msg, e)

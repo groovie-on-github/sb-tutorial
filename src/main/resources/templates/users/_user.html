@@ -1,0 +1,8 @@
+<li th:each="user : ${users}" th:object="${user}">
+  <img th:replace="shared/_gravatar">
+  <a href="#" th:href="@{/users/{id}(id = *{id})}" th:text="*{name}">user.name</a>
+  <th:block th:if="${@sessionsHelper.admin && !@sessionsHelper.isCurrentUser(user.email)}">
+  | <button class="btn btn-link border-0 p-0 align-top del-btn" form="deleteForm" formaction="#"
+            th:formaction="@{/users/{id}/delete(id = *{id})}" th:text="#{view.users.index.delete}">delete</button>
+  </th:block>
+</li>

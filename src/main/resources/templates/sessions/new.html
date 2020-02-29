@@ -12,12 +12,12 @@
       <form action="#" th:action="@{/login}" method="post">
         <div class="form-group">
           <label for="email" th:text="#{userForm.email}">Email:</label>
-          <input id="email" class="form-control" type="email" name="email">
+          <input id="email" class="form-control" type="email" name="email" autofocus>
         </div>
 
         <div class="form-group mb-1">
           <label for="password" th:text="#{userForm.password}">Password:</label>
-          <a href="#" th:href="@{/password_resets/new}" th:text="#{view.sessions.new.password-reset}">(forgot password)</a>
+          <a href="#" th:href="@{/password_resets/new}" th:text="#{view.sessions.new.password-reset}" tabindex="-1">(forgot password)</a>
           <input id="password" class="form-control mb-1" type="password" name="password">
         </div>
 

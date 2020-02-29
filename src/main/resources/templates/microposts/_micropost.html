@@ -1,0 +1,32 @@
+<li th:id="*{id}" th:each="micropost : ${microposts}" th:object="${micropost}">
+  <th:block th:object="${micropost.user}" th:with="gravatarOpts = ${@usersHelper.gravatarSize(50)}">
+  <img th:replace="shared/_gravatar">
+  </th:block>
+  <span class="user"><a href="#" th:href="@{/users/{id}(id = *{user.id})}"
+                        th:text="*{user.name}">micropost.user.name</a></span>
+  <span class="content">
+    [[*{content}]]
+    <img src="#" th:src="@{/microposts/picture/{id}(id = *{picture.id})}" alt="posted picture"
+         class="img-fluid" th:if="*{picture != null}">
+  </span>
+  <span class="timestamp">
+    <th:block
+        th:text="${@pluralHelper.pluralize(pattern, #locale, amount)}"
+        th:with="createdAt = *{createdAt},
+                 pair = ${@timeHelper.timeAgoInWords(createdAt)},
+                 pattern = #{${pair.first}},
+                 amount = ${pair.second}">Posted time ago.</th:block>
+    <button class="btn btn-link border-0 p-0 ml-1 align-top del-btn" form="deleteForm" formaction="#"
+            th:formaction="@{/microposts/{id}/delete(id = *{id})}"
+            th:text="#{view.microposts.micropost.delete}"
+            th:if="${@sessionsHelper.isCurrentUser(micropost.user.email)}">delete</button>
+  </span>
+</li>
+<form id="deleteForm" action="#" th:action="@{#}"method="post"></form>
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    $("button.del-btn").click(function(event) {
+      return confirm('[[#{view.microposts.micropost.delete.confirm}]]');
+    });
+  });
+</script>

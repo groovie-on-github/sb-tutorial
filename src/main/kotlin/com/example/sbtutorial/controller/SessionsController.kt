@@ -42,15 +42,15 @@ class SessionsController(private val authProperties: AuthProperties): BaseContro
 
     @PostMapping("/login-success")
     fun loginSuccess(@SessionAttribute("SPRING_SECURITY_SAVED_REQUEST", required = false) savedRequest: SavedRequest?,
+                     @CookieValue("\${auth.remember-me.cookieName}", required = false) cookie: Cookie?,
                      sessionsHelper: SessionsHelper,
-                     request: HttpServletRequest,
                      response: HttpServletResponse,
                      mav: ModelAndView): ModelAndView {
         log.debug("#loginSuccess called!!")
-        log.debug(">> $savedRequest")
+        log.debug(">> savedRequest => $savedRequest")
 
         // 永続ログインしているユーザーが別ユーザーでログインしてきた場合の対処
-        val cookie = request.cookies?.find { it.name == authProperties.rememberMe.cookieName }
+//        val cookie = request.cookies?.find { it.name == authProperties.rememberMe.cookieName }
         if(cookie != null) {
             val email = URLDecoder.decode(
                 Base64Utils.decodeFromString(cookie.value)

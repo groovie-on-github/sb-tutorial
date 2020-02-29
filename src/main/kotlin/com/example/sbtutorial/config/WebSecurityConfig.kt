@@ -2,6 +2,8 @@ package com.example.sbtutorial.config
 
 import com.example.sbtutorial.auth.AccountService
 import com.example.sbtutorial.auth.AuthProperties
+import com.example.sbtutorial.controller.UsersController as UC
+import com.example.sbtutorial.controller.MicropostsController as MC
 import org.apache.commons.logging.LogFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -31,14 +33,37 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
             // 認証が必要なリクエストを設定する
             // 順番は大事！！
             .authorizeRequests()
+                // ルート、静的ページへのアクセスは許可する
+                .mvcMatchers("/", "/about", "/help", "/contact").permitAll()
+
+                // 静的リソースへのアクセスは許可する
+                .mvcMatchers("/favicon.ico", "/webjars/**", "/css/**", "/images/**").permitAll()
+
+                // 認証系のアクセスは許可する
+                .mvcMatchers("/login-success", "/login-error", "/logout-success").permitAll()
+
+                // 登録ページへのアクセスは許可する
+                .mvcMatchers("/signup").permitAll()
+
+                // エラーハンドラーへのアクセスは許可する
+                .mvcMatchers("/error/access-denied").permitAll()
+
                 // ユーザーリソースに関するアクセスを制限する
                 // ユーザー情報表示以外は本人のみ
                 // ユーザー削除はROLE_ADMINのみ許可
-                .mvcMatchers(HttpMethod.GET, "/users").authenticated()
-                .mvcMatchers(HttpMethod.GET, "/users/{id}").permitAll()
-                .mvcMatchers(HttpMethod.GET, "/users/{id}/*").access("isAuthenticated() and principal.id.toString() == #id")
-                .mvcMatchers(HttpMethod.POST, "/users/{id}").access("isAuthenticated() and principal.id.toString() == #id")
-                .mvcMatchers(HttpMethod.POST, "/users/{id}/delete").access("isAuthenticated() and hasRole('ADMIN')")
+                .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}").authenticated()
+                .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}/{id}").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}/{id}/edit")
+                    .access("isAuthenticated() and @securityHelper.isCurrentUser(principal, #id)")
+                .mvcMatchers(HttpMethod.POST, "/${UC.BASE_PATH}/{id}")
+                    .access("isAuthenticated() and @securityHelper.isCurrentUser(principal, #id)")
+                .mvcMatchers(HttpMethod.POST, "/${UC.BASE_PATH}/{id}/delete")
+                    .access("isAuthenticated() and @securityHelper.canDeleteUser(principal)")
+
+                // マイクロポストリソースに関するアクセスを制限する
+                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}").authenticated()
+                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}/{id}/delete")
+                    .access("isAuthenticated() and @securityHelper.canDeleteMicropost(principal, #id)")
 
                 // activation
                 .mvcMatchers(HttpMethod.GET, "/account_activation/{token}/edit").permitAll()
@@ -46,14 +71,12 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
                 // password reset
                 .mvcMatchers("/password_resets/**").permitAll()
 
-                // ルート直下のアクセスは許可する
-                .mvcMatchers("/*").permitAll()
-
-                // 静的リソースへのアクセスは許可する
-                .mvcMatchers("/webjars/**", "/css/**", "/images/**").permitAll()
-
-                // 上記以外は認証が必要
-                .anyRequest().authenticated()
+                .apply {
+                    // 上記以外は拒否
+                    if(log.isDebugEnabled) //anyRequest().denyAll()
+                    // 上記以外は認証が必要
+                    else anyRequest().authenticated()
+                }
 
             .and()
 

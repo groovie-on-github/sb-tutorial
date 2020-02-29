@@ -1,0 +1,26 @@
+<section class="micropost_form">
+  <form action="#" th:action="@{/microposts}" method="post" enctype="multipart/form-data" th:object="${micropostForm}">
+    <th:block th:replace="shared/_error_messages"></th:block>
+
+    <div class="form-group field">
+      <textarea id="content" class="form-control" th:field="*{content}" placeholder="Compose new micropost..."
+                th:placeholder="#{view.shared.micropost-form.textarea}" th:errorclass="field_with_errors"></textarea>
+    </div>
+
+    <input class="btn btn-success" type="submit" value="Post" th:value="#{view.shared.micropost-form.submit}">
+
+    <div class="form-group picture">
+      <input id="micropost_picture" name="picture" class="form-control-file" type="file" accept="image/*">
+    </div>
+  </form>
+  <script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+      $('#micropost_picture').change(function(event) {
+        if (this.files[0].size > 5 * 1024 * 1024) {
+          alert(/*[[#{view.shared.micropost-form.picture.alert}]]*/ "Maximum file size is 5MB.\nPlease choose a smaller file.");
+          this.value = "";
+        }
+      });
+    });
+  </script>
+</section>

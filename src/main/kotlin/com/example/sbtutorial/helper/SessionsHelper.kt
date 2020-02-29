@@ -28,10 +28,10 @@ class SessionsHelper {
 
     private fun currentUser(current: Account?): Account? {
         val ctx = SecurityContextHolder.getContext()
-        log.debug(">> authentication => ${ctx.authentication}")
+//        log.debug(">> authentication => ${ctx.authentication}")
 //        log.debug(">> principal => ${ctx.authentication.principal}")
 
-        val account = when (val principal = ctx.authentication.principal) {
+        val account = when (val principal = ctx.authentication?.principal) {
             is Account -> principal
             else -> null
         }

@@ -3,8 +3,13 @@ package com.example.sbtutorial.model.user
 import com.example.sbtutorial.model.BaseForm
 import com.example.sbtutorial.model.IHavePassword
 import com.example.sbtutorial.model.UpdateGroup
+import com.example.sbtutorial.model.micropost.Micropost
+import com.example.sbtutorial.model.micropost.MicropostsService
 import com.example.sbtutorial.model.user.AuthenticationType.*
 import com.example.sbtutorial.validation.PasswordConfirm
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.validation.BindingResult
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 import javax.validation.constraints.Email
@@ -15,13 +20,33 @@ import javax.validation.groups.Default
 
 @PasswordConfirm(message = "{user.passwordConfirmation.PasswordConfirm}",
                  groups = [Default::class, UpdateGroup::class])
-class UserForm(usersService: UsersService, user: User? = null)
-            : BaseForm<User, UsersService>(user, usersService), IHavePassword {
+class UserForm(usersService: UsersService,
+               user: User? = null,
+               private val micropostsService: MicropostsService? = null) : BaseForm<User, UsersService>(user, usersService), IHavePassword {
 
     companion object {
 
+        const val NAME = "userForm"
+        const val FEED = "feedItems"
+
         private const val PASSWORD_RESET_COMPLETE = "password-reset-complete"
+
+        fun from(id: UUID, usersService: UsersService, micropostsService: MicropostsService): UserForm =
+            UserForm(usersService, usersService.findById(id), micropostsService)
     }
+
+    init {
+        addValidation("validate email existence") { result ->
+            return@addValidation when(service.findByEmail(email!!.toLowerCase())) {
+                null -> true
+                else -> {
+                    result.rejectValue("email", "user.email.Used", arrayOf(email), "Email is already used")
+                    false
+                }
+            }
+        }
+    }
+
 
     val id: UUID?
         get() = entity?.id
@@ -84,6 +109,11 @@ class UserForm(usersService: UsersService, user: User? = null)
 
     fun passwordResetComplete() { resetToken = PASSWORD_RESET_COMPLETE }
 
+    fun getMicroposts(pageable: Pageable): Page<Micropost> = micropostsService!!.findAll(entity!!, pageable)
+
+    fun countMicroposts(): Long? = if(entity == null) null else micropostsService!!.countByUser(entity!!)
+
+    fun feed(pageable: Pageable): Page<Micropost> = micropostsService!!.findAll(entity!!, pageable)
 
     override fun populate(): User {
         if(entity == null) entity = User()

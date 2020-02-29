@@ -1,12 +1,12 @@
 package com.example.sbtutorial.model.user
 
+import com.example.sbtutorial.model.micropost.Micropost
+import com.example.sbtutorial.model.micropost.MicropostsRepository
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import io.mockk.slot
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.AdditionalAnswers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
@@ -16,7 +16,7 @@ import javax.validation.ConstraintViolationException
 import javax.validation.Validation
 
 @DataJpaTest
-class UserTests(@Autowired private val em: TestEntityManager) {
+class UserTests @Autowired constructor(private val em: TestEntityManager, private val mr: MicropostsRepository) {
 
     @MockkBean
     private lateinit var us: UsersService
@@ -37,6 +37,7 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         }
 
         every { us.save(any()) } answers { em.persistAndFlush(firstArg()) }
+        every { us.delete(any()) } answers { em.remove(firstArg()) }
         every { us.digest(any()) } answers { pe.encode(firstArg())}
     }
 
@@ -249,5 +250,16 @@ class UserTests(@Autowired private val em: TestEntityManager) {
         // 同一のユーザーから作られたUserFormは一致する
         userForm.save()
         assertThat(UserForm(us, user)).isEqualTo(UserForm(us, user))
+    }
+
+    @Test
+    fun `associated microposts should be destroyed`() {
+        userForm.save()
+        user.micropostList.add(Micropost("Lorem ipsum", user))
+        em.persistAndFlush(user)
+        val before = mr.count()
+        assertThat(before).isGreaterThanOrEqualTo(1)
+        userForm.delete()
+        assertThat(mr.count()).isEqualTo(before - 1)
     }
 }

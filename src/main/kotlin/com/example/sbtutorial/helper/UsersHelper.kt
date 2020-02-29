@@ -19,4 +19,6 @@ object UsersHelper {
 
         return GRAVATAR_URL.format(DigestUtils.md5DigestAsHex(email.toByteArray()), options)
     }
+
+    fun gravatarSize(size: Int): Map<String, Int> = mapOf("size" to size)
 }

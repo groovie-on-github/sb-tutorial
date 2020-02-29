@@ -1,0 +1,6 @@
+<th:block th:unless="${feedItems.isEmpty()}">
+<ol class="microposts" th:with="microposts = ${feedItems}">
+  <li th:replace="microposts/_micropost"></li>
+</ol>
+<nav th:replace="shared/_pagination(${feedItems}, '/')"></nav>
+</th:block>

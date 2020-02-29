@@ -4,6 +4,7 @@ import com.example.sbtutorial.helper.SessionsHelper
 import com.example.sbtutorial.mail.MailSenderService
 import com.example.sbtutorial.mail.SendFailedException
 import com.example.sbtutorial.model.UpdateGroup
+import com.example.sbtutorial.model.micropost.MicropostsService
 import com.example.sbtutorial.model.user.AuthenticationType.ACTIVATION
 import com.example.sbtutorial.model.user.UserForm
 import com.example.sbtutorial.model.user.UsersService
@@ -25,16 +26,17 @@ import javax.servlet.http.HttpServletRequest
 
 @Controller
 class UsersController(private val us: UsersService,
-                      private val ms: MailSenderService): BaseController() {
+                      private val ms: MicropostsService,
+                      private val mailer: MailSenderService): BaseController() {
 
     companion object {
         const val BASE_PATH = "users"
 
-        private const val BASE_TITLE_KEY = "view.users"
-        private const val TITLE_KEY_INDEX = "${BASE_TITLE_KEY}.index.title"
-        private const val TITLE_KEY_SHOW = "${BASE_TITLE_KEY}.show.title"
-        private const val TITLE_KEY_NEW = "${BASE_TITLE_KEY}.new.title"
-        private const val TITLE_KEY_EDIT = "${BASE_TITLE_KEY}.edit.title"
+        private const val BASE_KEY = "view.users"
+        private const val TITLE_KEY_INDEX = "${BASE_KEY}.index.title"
+        private const val TITLE_KEY_SHOW = "${BASE_KEY}.show.title"
+        private const val TITLE_KEY_NEW = "${BASE_KEY}.new.title"
+        private const val TITLE_KEY_EDIT = "${BASE_KEY}.edit.title"
 
         private const val VIEW_NAME_INDEX = "$BASE_PATH/index"
         private const val VIEW_NAME_SHOW = "$BASE_PATH/show"
@@ -45,18 +47,18 @@ class UsersController(private val us: UsersService,
     private val log = LogFactory.getLog(UsersController::class.java)
 
 
-    @InitBinder("userForm")
+    @InitBinder(UserForm.NAME)
     fun initBinderUser(binder: WebDataBinder) {
         binder.setAllowedFields("name", "email", "password", "passwordConfirmation")
         binder.registerCustomEditor(String::class.java, StringTrimmerEditor(true))
     }
 
-    @ModelAttribute("userForm")
+    @ModelAttribute(UserForm.NAME)
     fun modelUserForm(@PathVariable("id", required = false) id: UUID?): UserForm {
         log.debug("#modelUserForm($id) called!!")
         val user = if(id != null) us.findActivatedById(id) else null
         log.debug(">> user => $user")
-        return UserForm(us, user)
+        return UserForm(us, user, ms)
     }
 
 
@@ -68,7 +70,7 @@ class UsersController(private val us: UsersService,
 
         mav.viewName = VIEW_NAME_INDEX
         mav.model[TITLE_KEY] = TITLE_KEY_INDEX
-        mav.model["users"] = us.findAllActivated(PageRequest.of(pageable.pageNumber, size ?: 30))
+        mav.model["users"] = us.findAllActivated(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
         mav.model["gravatarOpts"] = mapOf("size" to 50)
 
         log.debug(">> $mav")
@@ -76,8 +78,10 @@ class UsersController(private val us: UsersService,
     }
 
     @GetMapping("/$BASE_PATH/{id}")
-    fun show(mav: ModelAndView,
-             @ModelAttribute("userForm") userForm: UserForm): ModelAndView {
+    fun show(@ModelAttribute(UserForm.NAME) userForm: UserForm,
+             @RequestParam("size", required = false) size: Int?,
+             pageable: Pageable,
+             mav: ModelAndView): ModelAndView {
         log.debug("#show called!!")
 
         if(userForm.id == null) {
@@ -87,6 +91,7 @@ class UsersController(private val us: UsersService,
             mav.viewName = VIEW_NAME_SHOW
             mav.model[TITLE_KEY] = TITLE_KEY_SHOW
             mav.model[TITLE_ARGS] = userForm.name
+            mav.model["microposts"] = userForm.getMicroposts(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
         }
 
         log.debug(">> $mav")
@@ -105,14 +110,14 @@ class UsersController(private val us: UsersService,
     }
 
     @PostMapping("/signup")
-    fun create(@Validated @ModelAttribute("userForm") userForm: UserForm,
+    fun create(@Validated @ModelAttribute(UserForm.NAME) userForm: UserForm,
                result: BindingResult,
                request: HttpServletRequest,
                redirect: RedirectAttributes,
                mav: ModelAndView): ModelAndView {
         log.debug("#create called!!")
 
-        if(!result.hasFieldErrors("email")) validateEmailExistence(userForm.email!!, result)
+        if(!result.hasFieldErrors("email")) userForm.additionalValidate(result)
 
         log.debug(">> $result")
         if(result.hasErrors()) {
@@ -142,14 +147,14 @@ class UsersController(private val us: UsersService,
             val params = mapOf("name" to userForm.name!!, "url" to activationUrl)
 
             try {
-                ms.accountActivation(userForm.email!!, params, request.locale)
-                redirect.addFlashAttribute("flash", mapOf("info" to "view.users.create.mail.sent"))
+                mailer.accountActivation(userForm.email!!, params, request.locale)
+                redirect.addFlashAttribute("flash", mapOf("info" to "$BASE_KEY.create.mail.sent"))
 
             } catch(e: SendFailedException) {
                 log.warn(">>")
                 log.warn(e.text)
 
-                redirect.addFlashAttribute("flash", mapOf("warning" to "view.users.create.mail.failed"))
+                redirect.addFlashAttribute("flash", mapOf("warning" to "$BASE_KEY.create.mail.failed"))
             }
 
             mav.viewName = "redirect:/"
@@ -171,7 +176,7 @@ class UsersController(private val us: UsersService,
     }
 
     @PostMapping("/$BASE_PATH/{id}")
-    fun update(@Validated(UpdateGroup::class) @ModelAttribute("userForm") userForm: UserForm,
+    fun update(@Validated(UpdateGroup::class) @ModelAttribute(UserForm.NAME) userForm: UserForm,
                result: BindingResult,
                redirect: RedirectAttributes,
                sessionsHelper: SessionsHelper,
@@ -180,7 +185,7 @@ class UsersController(private val us: UsersService,
 
         // メールアドレスの変更が要求されたら独自追加バリデーション
         if(!result.hasFieldErrors("email") && !sessionsHelper.isCurrentUser(userForm.email!!)) {
-            validateEmailExistence(userForm.email!!, result)
+            userForm.additionalValidate(result)
         }
 
         log.debug(">> $result")
@@ -194,8 +199,7 @@ class UsersController(private val us: UsersService,
             log.debug(">> update succeeded!!")
 
             mav.viewName = "redirect:/$BASE_PATH/${userForm.id}"
-            redirect.addFlashAttribute("flash",
-                mapOf("success" to "view.users.edit.updated"))
+            redirect.addFlashAttribute("flash", mapOf("success" to "$BASE_KEY.edit.updated"))
         }
 
         log.debug(">> $mav")
@@ -203,7 +207,7 @@ class UsersController(private val us: UsersService,
     }
 
     @PostMapping("/$BASE_PATH/{id}/delete")
-    fun destroy(@ModelAttribute("userForm") userForm: UserForm,
+    fun destroy(@ModelAttribute(UserForm.NAME) userForm: UserForm,
                 redirect: RedirectAttributes,
                 mav: ModelAndView): ModelAndView {
         log.debug("#destroy called!!")
@@ -211,19 +215,10 @@ class UsersController(private val us: UsersService,
         userForm.delete()
 
         mav.viewName = "redirect:/$BASE_PATH"
-        redirect.addFlashAttribute("flash", mapOf("success" to "view.users.delete.success"))
+        redirect.addFlashAttribute("flash", mapOf("success" to "$BASE_KEY.delete.success"))
         redirect.addFlashAttribute("flashArg", userForm.name)
 
         log.debug(">> $mav")
         return mav
-    }
-
-
-    private fun validateEmailExistence(email: String, result: BindingResult): Boolean {
-        return (us.findByEmail(email.toLowerCase()) == null).also {
-            if(!it) {
-                result.rejectValue("email", "user.email.Used", arrayOf(email), "Email is already used")
-            }
-        }
     }
 }
