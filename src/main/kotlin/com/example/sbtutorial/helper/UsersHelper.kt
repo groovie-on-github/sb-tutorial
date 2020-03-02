@@ -2,6 +2,7 @@ package com.example.sbtutorial.helper
 
 import org.springframework.stereotype.Service
 import org.springframework.util.DigestUtils
+import kotlin.math.absoluteValue
 
 @Service
 object UsersHelper {
@@ -12,7 +13,7 @@ object UsersHelper {
 
     fun gravatarFor(email: String, gravatarOpts: Map<String, Any>?): String {
         var options = "s='%d'".format(gravatarOpts?.get("size") ?: 80)
-        options = when(val num = (0..DEFAULT_IMAGES.size).random()) {
+        options = when(val num = email.hashCode().absoluteValue % (DEFAULT_IMAGES.size + 1)) {
             DEFAULT_IMAGES.size -> options
             else -> "$options, d='${DEFAULT_IMAGES[num]}'"
         }

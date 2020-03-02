@@ -45,7 +45,7 @@ class StaticPagesController(private val sh: SessionsHelper, private val us: User
         if(sh.loggedIn) {
             val userForm = UserForm.from(sh.currentId!!, us, ms)
             mav.model[UserForm.NAME] = userForm
-            mav.model[UserForm.FEED] = userForm.feed(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
+            mav.model[UserForm.FEED] = userForm.getFeed(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
             mav.model[MicropostForm.NAME] = MicropostForm(ms, ps)
         }
 

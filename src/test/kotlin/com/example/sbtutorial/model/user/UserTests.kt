@@ -5,18 +5,21 @@ import com.example.sbtutorial.model.micropost.MicropostsRepository
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.PersistenceException
 import javax.validation.ConstraintViolationException
 import javax.validation.Validation
 
 @DataJpaTest
-class UserTests @Autowired constructor(private val em: TestEntityManager, private val mr: MicropostsRepository) {
+class UserTests @Autowired constructor(private val em: TestEntityManager,
+                                       private val ur: UsersRepository, private val mr: MicropostsRepository) {
 
     @MockkBean
     private lateinit var us: UsersService
@@ -261,5 +264,142 @@ class UserTests @Autowired constructor(private val em: TestEntityManager, privat
         assertThat(before).isGreaterThanOrEqualTo(1)
         userForm.delete()
         assertThat(mr.count()).isEqualTo(before - 1)
+    }
+
+    @Test
+    fun `test relationships`() {
+        val s = SoftAssertions()
+        val follower1 = User("follower1", "follower1@example.com").apply { passwordDigest = pe.encode("password") }
+        println(">> 0-1 save follower1")
+        ur.saveAndFlush(follower1)
+        s.assertThat(follower1.following).hasSize(0)
+        s.assertThat(follower1.followers).hasSize(0)
+
+        val followed1 = User("followed1", "followed1@example.com").apply { passwordDigest = pe.encode("password") }
+        println(">> 0-2 save followed1")
+        ur.saveAndFlush(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(0)
+
+        // 1-1 follower1がfollowed1をフォロー
+        follower1.following.add(followed1)
+        println(">> 1-1 follower1 follow followed1")
+        ur.saveAndFlush(follower1)
+        println(">> 1-1 refresh follower1")
+        em.refresh(follower1)
+        s.assertThat(follower1.following).hasSize(1)
+        s.assertThat(follower1.followers).hasSize(0)
+
+        // 1-2 followed1がfollower1のフォロワーになっているはず
+        println(">> 1-2 refresh followed1")
+        em.refresh(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(1)
+
+        // 2-1 follower1がfollowed1をフォロー解除
+        follower1.following.remove(followed1)
+        println(">> 2-1 follower1 un-follow followed1")
+        ur.saveAndFlush(follower1)
+        s.assertThat(follower1.following).hasSize(0)
+        s.assertThat(follower1.followers).hasSize(0)
+
+        // 2-2 followed1のフォロワーからfollower1がいなくなっているはず
+        println(">> 2-2 refresh followed1")
+        em.refresh(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(0)
+
+        // 3-1 follower1がfollowed1を再フォロー出来る
+        follower1.following.add(followed1)
+        println(">> 3-1 follower1 re-follow followed1")
+        ur.saveAndFlush(follower1)
+        s.assertThat(follower1.following).hasSize(1)
+        s.assertThat(follower1.followers).hasSize(0)
+
+        // 3-2 followed1がfollower1のフォロワーになっているはず
+        println(">> 3-2 refresh followed1")
+        em.refresh(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(1)
+
+        // 4-1 follower1が削除されたらリレーションが消滅する
+        println(">> 4-1 delete follower1")
+        ur.delete(follower1)
+        println(">> 4-1 em flush")
+        em.flush()
+
+        // 4-2 followed1のフォロワーからfollower1がいなくなっているはず
+        println(">> 4-2 refresh followed1")
+        em.refresh(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(0)
+
+        // 5-0 follower2登録 & followed1をフォロー
+        val follower2 = User("follower2", "follower2@example.com").apply { passwordDigest = pe.encode("password") }
+        println(">> 5-0 save follower2"); follower2.following.add(followed1); ur.saveAndFlush(follower2)
+        s.assertThat(follower2.following).hasSize(1)
+        s.assertThat(follower2.followers).hasSize(0)
+        println(">> 5-0 refresh followed1")
+        em.refresh(followed1)
+        s.assertThat(followed1.following).hasSize(0)
+        s.assertThat(followed1.followers).hasSize(1)
+
+        // 5-1 followed1が削除されたらリレーションが消滅する
+        println(">> 5-1 delete followed1")
+        ur.delete(followed1)
+        println(">> 5-1 em flush")
+        em.flush()
+
+        // 5-2 follower2のフォローからfollowed1がいなくなっているはず
+        println(">> 5-2 refresh follower1")
+        em.refresh(follower2)
+        s.assertThat(follower2.following).hasSize(0)
+        s.assertThat(follower2.followers).hasSize(0)
+
+        // 6-0 followed2登録
+        val followed2 = User("followed2", "followed2@example.com").apply { passwordDigest = pe.encode("password") }
+        println(">> 6-0 save followed2"); ur.saveAndFlush(followed2)
+
+        // 6-1 follower2とfollowed2が相互フォローする
+        follower2.following.add(followed2)
+        println(">> 6-1 save follower2")
+        ur.saveAndFlush(follower2)
+        followed2.following.add(follower2)
+        println(">> 6-1 save followed2")
+        ur.saveAndFlush(followed2)
+        println(">> 6-1 refresh follower2")
+        em.refresh(follower2)
+        println(">> 6-1 refresh followed2")
+        em.refresh(followed2)
+        s.assertThat(follower2.following).hasSize(1)
+        s.assertThat(follower2.followers).hasSize(1)
+        s.assertThat(followed2.following).hasSize(1)
+        s.assertThat(followed2.followers).hasSize(1)
+
+        // 6-2 follower2が削除されたらfollowed2のフォロー、フォロワーからfollower2がいなくなっているはず
+        println(">> 6-2 delete follower2")
+        ur.delete(follower2)
+        println(">> 6-2 em flush")
+        em.flush()
+        println(">> 6-2 refresh followed2")
+        em.refresh(followed2)
+        s.assertThat(followed2.following).hasSize(0)
+        s.assertThat(followed2.followers).hasSize(0)
+
+
+        // 99-1 2重フォローはできない
+        val follower99 = User("follower99", "follower99@example.com").apply { passwordDigest = pe.encode("password") }
+        val followed99 = User("followed99", "followed99@example.com").apply { passwordDigest = pe.encode("password") }
+        println(">> 99-1 save follower99 & followed99")
+        ur.saveAndFlush(follower99); ur.saveAndFlush(followed99)
+        s.assertThatThrownBy {
+            println(">> 99-1 follower99 follow followed99 2times")
+            follower99.following.add(followed99)
+            follower99.following.add(followed99)
+            ur.saveAndFlush(follower99)
+        }.isInstanceOf(DataIntegrityViolationException::class.java)
+
+
+        s.assertAll()
     }
 }

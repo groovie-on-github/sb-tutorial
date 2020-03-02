@@ -37,11 +37,15 @@ class UsersController(private val us: UsersService,
         private const val TITLE_KEY_SHOW = "${BASE_KEY}.show.title"
         private const val TITLE_KEY_NEW = "${BASE_KEY}.new.title"
         private const val TITLE_KEY_EDIT = "${BASE_KEY}.edit.title"
+        private const val TITLE_KEY_FOLLOWING = "${BASE_KEY}.show-follow.following.title"
+        private const val TITLE_KEY_FOLLOWERS = "${BASE_KEY}.show-follow.followers.title"
 
         private const val VIEW_NAME_INDEX = "$BASE_PATH/index"
         private const val VIEW_NAME_SHOW = "$BASE_PATH/show"
         private const val VIEW_NAME_NEW = "$BASE_PATH/new"
         private const val VIEW_NAME_EDIT = "$BASE_PATH/edit"
+        private const val VIEW_NAME_FOLLOWING = "$BASE_PATH/show_follow"
+        private const val VIEW_NAME_FOLLOWERS = "$BASE_PATH/show_follow"
     }
 
     private val log = LogFactory.getLog(UsersController::class.java)
@@ -217,6 +221,36 @@ class UsersController(private val us: UsersService,
         mav.viewName = "redirect:/$BASE_PATH"
         redirect.addFlashAttribute("flash", mapOf("success" to "$BASE_KEY.delete.success"))
         redirect.addFlashAttribute("flashArg", userForm.name)
+
+        log.debug(">> $mav")
+        return mav
+    }
+
+    @GetMapping("/$BASE_PATH/{id}/following")
+    fun following(@ModelAttribute(UserForm.NAME) userForm: UserForm,
+                  @RequestParam("size", required = false) size: Int?,
+                  pageable: Pageable,
+                  mav: ModelAndView): ModelAndView {
+        log.debug("#following called!!")
+
+        mav.viewName = VIEW_NAME_FOLLOWING
+        mav.model[TITLE_KEY] = TITLE_KEY_FOLLOWING
+        mav.model["users"] = userForm.getFollowing(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
+
+        log.debug(">> $mav")
+        return mav
+    }
+
+    @GetMapping("/$BASE_PATH/{id}/followers")
+    fun followers(@ModelAttribute(UserForm.NAME) userForm: UserForm,
+                  @RequestParam("size", required = false) size: Int?,
+                  pageable: Pageable,
+                  mav: ModelAndView): ModelAndView {
+        log.debug("#followers called!!")
+
+        mav.viewName = VIEW_NAME_FOLLOWERS
+        mav.model[TITLE_KEY] = TITLE_KEY_FOLLOWERS
+        mav.model["users"] = userForm.getFollowers(PageRequest.of(pageable.pageNumber, size ?: DEFAULT_PAGE_SIZE))
 
         log.debug(">> $mav")
         return mav

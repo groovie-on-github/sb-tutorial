@@ -1,0 +1,9 @@
+<div id="follow_form" class="mb-2" th:unless="${@sessionsHelper.isCurrentUser(userForm.email)}"
+     th:with="isFollowed = ${userForm.isFollowedBy(@sessionsHelper.currentId)}">
+  <th:block th:if="${isFollowed}">
+    <div th:replace="users/_unfollow"></div>
+  </th:block>
+  <th:block th:unless="${isFollowed}">
+    <div th:replace="users/_follow"></div>
+  </th:block>
+</div>

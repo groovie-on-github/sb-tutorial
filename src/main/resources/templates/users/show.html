@@ -13,13 +13,19 @@
           [[*{name}]]
         </h1>
       </section>
+      <section th:replace="shared/_stats"></section>
     </aside>
-    <div class="col-md-8 mt-4" th:if="${microposts.totalPages > 0}">
-      <h3 th:text="#{view.users.show.microposts.heading(${microposts.totalElements})}">Microposts (count)</h3>
+    <div class="col-md-8 mt-3">
+      <th:block th:if="${@sessionsHelper.loggedIn}">
+        <div th:replace="users/_follow_form"></div>
+      </th:block>
+      <th:block th:if="${microposts.totalPages > 0}">
+      <h3 class="mb-3" th:text="#{view.users.show.microposts.heading(${microposts.totalElements})}">Microposts (count)</h3>
       <ol class="microposts">
         <li th:replace="microposts/_micropost"></li>
       </ol>
       <th:block th:replace="shared/_pagination(${microposts}, |/users/${userForm.id}|)"></th:block>
+      </th:block>
     </div>
   </div>
 </th:block>

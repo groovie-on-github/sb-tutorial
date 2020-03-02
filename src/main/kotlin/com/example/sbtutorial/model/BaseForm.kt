@@ -13,11 +13,9 @@ abstract class BaseForm<E: BaseEntity, S: IService<E>>(protected var entity: E?,
         validations.put(description, validation)
 
     fun additionalValidate(result: BindingResult): Boolean {
-        var returnVal = true
-        validations.forEach { (description, validate) ->
-            returnVal = validate(result).also { log.debug(">> $description => $it") } && returnVal
+        return validations.toList().fold(true) { acc, (description, validate) ->
+            validate(result).also { log.debug(">> $description => $it") } && acc
         }
-        return returnVal
     }
 
     protected abstract fun populate(): E

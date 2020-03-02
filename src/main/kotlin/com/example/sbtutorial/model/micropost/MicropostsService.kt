@@ -3,7 +3,9 @@ package com.example.sbtutorial.model.micropost
 import com.example.sbtutorial.model.IService
 import com.example.sbtutorial.model.user.User
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
@@ -12,6 +14,9 @@ import java.util.*
 class MicropostsService(private val mr: MicropostsRepository): IService<Micropost> {
 
     fun findAll(user: User, pageable: Pageable): Page<Micropost> = mr.findAllByUserOrderByCreatedAtDesc(user, pageable)
+
+    fun findFeed(user: User, pageable: Pageable): Page<Micropost> =
+        mr.findAllWithFollowing(user.id!!, PageRequest.of(pageable.pageNumber, pageable.pageSize, Sort.Direction.DESC, "created_at"))
 
     fun findById(id: UUID): Micropost? = mr.findByIdOrNull(id)
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/application :: main(~{::content})">
+<head>
+  <title>Following or Followers</title>
+</head>
+<body>
+<th:block th:fragment="content">
+  <div class="row">
+    <aside class="col-md-4">
+      <section class="user_info" th:object="${userForm}">
+        <img th:replace="shared/_gravatar">
+        <h1 th:text="*{name}">user.name</h1>
+        <small>
+          <span><a href="#" th:href="@{/users/{id}(id = *{id})}" th:text="#{view.users.show-follow.profile}">view my profile</a></span>
+          <span><b th:text="#{view.users.show-follow.microposts}">Microposts:</b> [[*{micropostsCount}]]</span>
+        </small>
+      </section>
+      <section class="stats">
+        <section th:replace="shared/_stats"></section>
+        <div class="user_avatars" th:unless="${users.empty}">
+          <th:block th:each="user : ${users}" th:object="${user}" th:with="gravatarOpts = ${@usersHelper.gravatarSize(30)}">
+            <a href="#" th:href="@{/users/{id}(id = *{id})}"><img th:replace="shared/_gravatar"></a>
+          </th:block>
+        </div>
+      </section>
+    </aside>
+    <div class="col-md-8 mt-3">
+      <h3 class="mb-3" th:text="#{${title_key}}">title</h3>
+      <ul class="users follow" th:unless="${users.empty}">
+        <li th:replace="users/_user"></li>
+      </ul>
+      <nav th:replace="shared/_pagination(${users}, |${#request.requestURI}|)"></nav>
+
+      <form id="deleteForm" action="#" th:action="@{#}" method="post"></form>
+      <script>
+        document.addEventListener("DOMContentLoaded", function(){
+          $("button.del-btn").click(function(event) {
+            return confirm('[[#{view.users.index.delete.confirm}]]');
+          });
+        });
+      </script>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

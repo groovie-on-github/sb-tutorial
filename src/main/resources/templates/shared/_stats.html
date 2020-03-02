@@ -1,0 +1,12 @@
+<section th:object="${userForm}">
+  <div class="stats">
+    <a href="#" th:href="@{/users/{id}/following(id = *{id})}">
+      <strong id="following" class="stat" th:text="*{followingCount}">following.count</strong>
+      [[#{view.shared.stats.following}]]
+    </a>
+    <a href="#" th:href="@{/users/{id}/followers(id = *{id})}">
+      <strong id="followers" class="stat" th:text="*{followersCount}">followers.count</strong>
+      [[#{view.shared.stats.followers}]]
+    </a>
+  </div>
+</section>

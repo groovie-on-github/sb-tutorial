@@ -145,3 +145,28 @@ INSERT INTO "user"(id, name, email, password_digest, is_activated, activated_at)
   SELECT RANDOM_UUID(), 'User 30', 'user-30@example.com', '$2a$10$DDff6yG4WIM7w7Q.SCv7LuYQnK3rddTHGomTSdQdbHPtl4sgolEHe',
     true, CURRENT_TIMESTAMP
     WHERE NOT EXISTS(SELECT id FROM "user" WHERE email='user-30@example.com');
+
+
+/* relationships */
+
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='hands@example.gov' AND follower.email='michael@example.com'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='boss@example.gov' AND follower.email='michael@example.com'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='michael@example.com' AND follower.email='hands@example.gov'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='michael@example.com' AND follower.email='duchess@example.gov'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='user-1@example.com' AND follower.email='michael@example.com'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);

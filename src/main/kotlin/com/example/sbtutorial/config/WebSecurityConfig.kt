@@ -2,6 +2,7 @@ package com.example.sbtutorial.config
 
 import com.example.sbtutorial.auth.AccountService
 import com.example.sbtutorial.auth.AuthProperties
+import com.example.sbtutorial.controller.RelationshipsController as RC
 import com.example.sbtutorial.controller.UsersController as UC
 import com.example.sbtutorial.controller.MicropostsController as MC
 import org.apache.commons.logging.LogFactory
@@ -51,7 +52,9 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
                 // ユーザーリソースに関するアクセスを制限する
                 // ユーザー情報表示以外は本人のみ
                 // ユーザー削除はROLE_ADMINのみ許可
-                .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}").authenticated()
+                .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}",
+                                             "/${UC.BASE_PATH}/{id}/following",
+                                             "/${UC.BASE_PATH}/{id}/followers").authenticated()
                 .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}/{id}").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/${UC.BASE_PATH}/{id}/edit")
                     .access("isAuthenticated() and @securityHelper.isCurrentUser(principal, #id)")
@@ -60,20 +63,24 @@ class WebSecurityConfig(private val authProperties: AuthProperties,
                 .mvcMatchers(HttpMethod.POST, "/${UC.BASE_PATH}/{id}/delete")
                     .access("isAuthenticated() and @securityHelper.canDeleteUser(principal)")
 
-                // マイクロポストリソースに関するアクセスを制限する
-                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}").authenticated()
-                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}/{id}/delete")
-                    .access("isAuthenticated() and @securityHelper.canDeleteMicropost(principal, #id)")
-
                 // activation
                 .mvcMatchers(HttpMethod.GET, "/account_activation/{token}/edit").permitAll()
 
                 // password reset
                 .mvcMatchers("/password_resets/**").permitAll()
 
+                // マイクロポストリソースに関するアクセスを制限する
+                .mvcMatchers(HttpMethod.GET, "/${MC.BASE_PATH}/picture/{id}").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}").authenticated()
+                .mvcMatchers(HttpMethod.POST, "/${MC.BASE_PATH}/{id}/delete")
+                    .access("isAuthenticated() and @securityHelper.canDeleteMicropost(principal, #id)")
+
+                // relationshipsに関するアクセスを制限する
+                .mvcMatchers(HttpMethod.POST, "/${RC.BASE_PATH}", "/${RC.BASE_PATH}/{id}/delete").authenticated()
+
                 .apply {
                     // 上記以外は拒否
-                    if(log.isDebugEnabled) //anyRequest().denyAll()
+                    if(log.isDebugEnabled) anyRequest().denyAll()
                     // 上記以外は認証が必要
                     else anyRequest().authenticated()
                 }

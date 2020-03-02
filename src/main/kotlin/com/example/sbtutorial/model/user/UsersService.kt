@@ -38,6 +38,23 @@ class UsersService(private val repository: UsersRepository,
     fun authenticate(token: String, digest: String, successHandler: () -> Unit = {}): Boolean =
         passwordEncoder.matches(token, digest).also { if(it) successHandler() }
 
-    fun authenticationUrl(type: AuthenticationType, builder: UriComponentsBuilder, email: String, token: String): String =
+    fun buildAuthenticationUrl(type: AuthenticationType, builder: UriComponentsBuilder, email: String, token: String): String =
         builder.path("/${type.value}/{token}/edit").queryParam("email", "{email}").build(token, email).toString()
+
+    @Transactional
+    fun follow(follower: User, followed: User): Int = repository.insertUserRelationShips(follower.id!!, followed.id!!)
+
+    @Transactional
+    fun unfollow(follower: User, followed: User): Int = repository.deleteUserRelationShips(follower.id!!, followed.id!!)
+
+    fun isFollowing(followerId: UUID, followedId: UUID): Boolean =
+        repository.countByIdAndFollowingId(followerId, followedId) == 1L
+
+    fun getFollowingCount(entity: User): Long = repository.countFollowingById(entity.id!!)
+
+    fun getFollowersCount(entity: User): Long = repository.countFollowersById(entity.id!!)
+
+    fun findFollowing(entity: User, pageable: Pageable): Page<User> = repository.findFollowingById(entity.id!!, pageable)
+
+    fun findFollowers(entity: User, pageable: Pageable): Page<User> = repository.findFollowersById(entity.id!!, pageable)
 }

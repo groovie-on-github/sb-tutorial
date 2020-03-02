@@ -3,6 +3,6 @@
   <h1 class="mb-2" th:text="*{name}">current_user.name</h1>
   <small>
     <span><a href="#" th:href="@{/users/{id}(id = *{id})}" th:text="#{view.shared.user-info.profile}">"view my profile"</a></span>
-    <span th:text="${@pluralHelper.pluralize(pattern, #locale, userForm.countMicroposts())}" th:with="pattern = #{view.shared.user-info.microposts}"></span>
+    <span th:text="${@pluralHelper.pluralize(pattern, #locale, userForm.micropostsCount)}" th:with="pattern = #{view.shared.user-info.microposts}"></span>
   </small>
 </section>

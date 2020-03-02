@@ -1609,3 +1609,355 @@ INSERT INTO micropost(id, content, "user_id", created_at)
   SELECT uuid_generate_v1(), 'Sed aperiam qui sint repudiandae.', u.id, CURRENT_TIMESTAMP + interval 'PT-31M'
     FROM "user" u WHERE u.email='example-5@railstutorial.org'
     AND NOT EXISTS(SELECT id FROM micropost WHERE content='Sed aperiam qui sint repudiandae.' AND "user_id"=u.id);
+
+
+/* generated user_relationships*/
+
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-2@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-3@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-4@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-5@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-6@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-7@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-8@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-9@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-10@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-11@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-12@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-13@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-14@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-15@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-16@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-17@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-18@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-19@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-20@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-21@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-22@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-23@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-24@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-25@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-26@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-27@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-28@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-29@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-30@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-31@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-32@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-33@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-34@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-35@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-36@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-37@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-38@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-39@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-40@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-41@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-42@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-43@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-44@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-45@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-46@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-47@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-48@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-49@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" follower CROSS JOIN "user" followed
+    WHERE follower.email='example@railstutorial.org' AND followed.email='example-50@railstutorial.org'
+    AND NOT EXISTS(SELECT follower_id FROM user_relationships WHERE follower_id=follower.id AND followed_id=followed.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-3@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-4@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-5@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-6@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-7@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-8@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-9@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-10@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-11@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-12@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-13@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-14@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-15@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-16@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-17@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-18@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-19@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-20@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-21@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-22@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-23@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-24@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-25@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-26@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-27@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-28@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-29@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-30@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-31@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-32@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-33@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-34@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-35@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-36@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-37@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-38@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-39@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);
+INSERT INTO user_relationships(follower_id, followed_id)
+  SELECT follower.id, followed.id FROM "user" followed CROSS JOIN "user" follower
+    WHERE followed.email='example@railstutorial.org' AND follower.email='example-40@railstutorial.org'
+    AND NOT EXISTS(SELECT followed_id FROM user_relationships WHERE followed_id=followed.id AND follower_id=follower.id);

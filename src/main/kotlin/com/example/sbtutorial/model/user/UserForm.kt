@@ -9,7 +9,6 @@ import com.example.sbtutorial.model.user.AuthenticationType.*
 import com.example.sbtutorial.validation.PasswordConfirm
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.validation.BindingResult
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 import javax.validation.constraints.Email
@@ -83,24 +82,33 @@ class UserForm(usersService: UsersService,
 
     private var activatedAt: Date? = null
 
+    val micropostsCount: Long
+        get() = micropostsService!!.countByUser(entity!!)
+
+    val followingCount: Long
+        get() = service.getFollowingCount(entity!!)
+
+    val followersCount: Long
+        get() = service.getFollowersCount(entity!!)
+
 
     fun authenticate(type: AuthenticationType, token: String): Boolean =
         when(type) {
             ACTIVATION -> if(entity?.activationDigest == null) false
-                                             else service.authenticate(token, entity!!.activationDigest!!) {
-                                                 isActivated = true
-                                                 activatedAt = Date()
-                                                 save()
-                                             }
+                          else service.authenticate(token, entity!!.activationDigest!!) {
+                              isActivated = true
+                              activatedAt = Date()
+                              save()
+                          }
 
             PASSWORD_RESET -> if(entity?.resetDigest == null) false
-                                                 else service.authenticate(token, entity!!.resetDigest!!)
+                              else service.authenticate(token, entity!!.resetDigest!!)
         }
 
     fun authenticationUrl(type: AuthenticationType, builder: UriComponentsBuilder): String =
         when(type) {
-            ACTIVATION ->  service.authenticationUrl(type, builder, email!!, activationToken)
-            PASSWORD_RESET -> service.authenticationUrl(type, builder, email!!, resetToken)
+            ACTIVATION ->  service.buildAuthenticationUrl(type, builder, email!!, activationToken)
+            PASSWORD_RESET -> service.buildAuthenticationUrl(type, builder, email!!, resetToken)
         }
 
     fun createActivationToken() { activationToken = service.newToken() }
@@ -111,9 +119,17 @@ class UserForm(usersService: UsersService,
 
     fun getMicroposts(pageable: Pageable): Page<Micropost> = micropostsService!!.findAll(entity!!, pageable)
 
-    fun countMicroposts(): Long? = if(entity == null) null else micropostsService!!.countByUser(entity!!)
+    fun getFeed(pageable: Pageable): Page<Micropost> = micropostsService!!.findFeed(entity!!, pageable)
 
-    fun feed(pageable: Pageable): Page<Micropost> = micropostsService!!.findAll(entity!!, pageable)
+    fun isFollowedBy(id: UUID): Boolean = service.isFollowing(id, this.id!!)
+
+    fun getFollowing(pageable: Pageable): Page<User> = service.findFollowing(entity!!, pageable)
+
+    fun getFollowers(pageable: Pageable): Page<User> = service.findFollowers(entity!!, pageable)
+
+    fun follow(followed: User) = service.follow(entity!!, followed)
+
+    fun unfollow(followed: User) = service.unfollow(entity!!, followed)
 
     override fun populate(): User {
         if(entity == null) entity = User()

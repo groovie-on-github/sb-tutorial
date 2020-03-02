@@ -56,6 +56,22 @@ class User(name: String = "", email: String = ""): BaseEntity() {
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "user")
     val micropostList: MutableList<Micropost> = mutableListOf()
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_relationships",
+        joinColumns = [JoinColumn(name = "follower_id")],
+        inverseJoinColumns = [JoinColumn(name = "followed_id")],
+        indexes = [Index(unique = true, columnList = "follower_id, followed_id")])
+    val following: MutableList<User> = mutableListOf()
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_relationships",
+        joinColumns = [JoinColumn(name = "followed_id")],
+        inverseJoinColumns = [JoinColumn(name = "follower_id")],
+        indexes = [Index(unique = true, columnList = "follower_id, followed_id")])
+    val followers: MutableList<User> = mutableListOf()
+
 
     @PrePersist
     @PreUpdate

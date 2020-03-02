@@ -1,0 +1,4 @@
+<form action="#" th:action="@{/relationships}" method="post">
+  <input name="followedId" type="hidden" th:value="${userForm.id}">
+  <input class="btn btn-success" type="submit" value="Follow" th:value="#{view.users.follow.submit}">
+</form>

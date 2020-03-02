@@ -111,4 +111,16 @@ class UsersControllerIT @Autowired constructor(
         assertThat(result.response.status).isEqualTo(HttpStatus.FOUND.value())
         assertThat(result.response.redirectedUrl).isEqualTo("/")
     }
+
+    @Test
+    fun `should redirect following when not logged in`() {
+        val result = TH.get(mvc, "/users/${user.id}/following")
+        assertThat(result.response.redirectedUrl).endsWith("/login")
+    }
+
+    @Test
+    fun `should redirect followers when not logged in`() {
+        val result = TH.get(mvc, "/users/${user.id}/followers")
+        assertThat(result.response.redirectedUrl).endsWith("/login")
+    }
 }

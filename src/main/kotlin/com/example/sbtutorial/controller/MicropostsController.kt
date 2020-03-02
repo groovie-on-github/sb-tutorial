@@ -57,7 +57,7 @@ class MicropostsController(private val ms: MicropostsService,
             mav.viewName = "${StaticPagesController.BASE_PATH}/home"
             val userForm = UserForm.from(sh.currentId!!, us, ms)
             mav.model[UserForm.NAME] = userForm
-            mav.model[UserForm.FEED] = userForm.feed(PageRequest.of(0, DEFAULT_PAGE_SIZE))
+            mav.model[UserForm.FEED] = userForm.getFeed(PageRequest.of(0, DEFAULT_PAGE_SIZE))
 
         } else {
             micropostForm.save()
